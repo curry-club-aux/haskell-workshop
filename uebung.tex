@@ -341,4 +341,40 @@ Haskell-Programme abzählbar. Wie passt das zusammen?
 \end{enumerate}
 \end{aufgabe}
 
+
+\section{Ideen für größere Projekte}
+
+\begin{aufgabe}{Ein Zahlenrätsel}
+Wie muss man die Zahlen~1,~3,~4 und~6 mit Klammern und den Operatoren
+\haskellinline{+ * - /} ergänzen, damit das Ergebnis~24 ist? Die Zahlen dürfen
+und müssen dabei alle genau einmal verwendet werden. Sie können aber in einer
+beliebigen Reihenfolge auftreten. Denkbar wäre also etwa die
+Lösung~\haskellinline{3+((1-4)/6)}, aber dieser Term hat den Wert~$2{,}5$.
+
+Schreibe ein Haskell-Programm, das für dich die Lösung findet! Ein mögliches
+Vorgehen ist folgendes.
+
+\begin{enumerate}
+\item Definiere einen Datentyp~\haskellinline{Exp} von Termen zu definieren.
+Das Beispiel könnte dabei durch~\haskellinline{Add (Lit 3) (Div (Sub (Lit 1)
+(Lit 4)) (Lit 6))} ausgedrückt werden.
+\item Schreibe eine Funktion~\haskellinline{eval :: (Fractional a) => Exp a -> a}.
+\item Schreibe eine Funktion~\haskellinline{groups :: [a] -> [([a],[a])]}, die
+folgendes leistet: Gegeben eine Liste, berechnet alle Möglichkeiten, diese Liste in zwei
+Teile zu zerlegen: einen vorderen und einen hinteren. Zum Beispiel:
+\begin{haskellcode}
+> groups "abc"
+[("abc",""),("ab","c"),("a","bc"),("","abc")]
+\end{haskellcode}
+\item Schreibe eine Funktion~\haskellinline{arb :: [a] -> [Exp a]}, die
+folgendes leistet: Gegeben eine Liste~\haskellinline{xs} von (zum Beispiel)
+Zahlen, gibt eine Liste von allen Termbäumen zurück, an deren Blättern (in
+genau der gegebenen Reihenfolge) die Zahlen aus~\haskellinline{xs} stehen. Alle Zahlen
+müssen verwendet werden, und zwar jeweils genau einmal.
+\item Importiere oder reimplementiere die Funktion~\haskellinline{permutations
+:: [a] -> [[a]]} aus~\haskellinline{Data.List}.
+\item Füge alle Puzzleteile zusammen.
+\end{enumerate}
+\end{aufgabe}
+
 \end{document}
