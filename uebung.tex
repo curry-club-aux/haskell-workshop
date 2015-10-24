@@ -6,13 +6,32 @@
 
 \maketitle{1}{Learn You a Haskell for Great Good!}
 
-\begin{aufgabe}{Aufwärmübungen in GHCi}
-  \begin{itemize}
-    \item Benutze die vordefinierten Funktionen \haskellinline{fst :: (a, b) -> a} und \haskellinline{snd :: (a, b) -> b}, um das Textzeichen aus \haskellinline{(1, ('a', "foo"))} zu extrahieren.
-    \item Sei \haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das mittlere Element in einer Sortierung der Liste) von \haskellinline{xs} berechnet. Verwende dazu \haskellinline{length}, \haskellinline{div} und \haskellinline{!!}.
-    \item Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit Hilfe von GHCI!
-  \end{itemize}
+
+\section{Aufwärmübungen in GHCi}
+
+\begin{aufgabe}{Verschachtelte Tupel}
+Benutze die vordefinierten Funktionen \haskellinline{fst :: (a, b) -> a} und \haskellinline{snd :: (a, b) -> b}, um das Textzeichen aus \haskellinline{(1, ('a', "foo"))} zu extrahieren.
 \end{aufgabe}
+
+\begin{aufgabe}{Medianbestimmung}
+Sei \haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das mittlere Element in einer Sortierung der Liste) von \haskellinline{xs} berechnet. Verwende dazu \haskellinline{length}, \haskellinline{div} und \haskellinline{!!}.
+\end{aufgabe}
+
+\begin{aufgabe}{Der Smiley-Operator erster Ordnung}
+Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit Hilfe von GHCi!
+\end{aufgabe}
+
+
+\section{Spiel und Spaß mit Listenfunktionen}
+
+
+\section{Funktionsdefinitionen}
+
+
+\section{Eigene Datentypen}
+
+
+\section{Typklassen}
 
 
 \end{document}
