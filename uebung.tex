@@ -6,7 +6,6 @@
 
 \maketitle{1}{Learn You a Haskell for Great Good!}
 
-
 \section{Aufwärmübungen in GHCi}
 
 \begin{aufgabe}{Verschachtelte Tupel}
@@ -24,8 +23,114 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 
 \section{Spiel und Spaß mit Listenfunktionen}
 
+\begin{aufgabe}{Groß- und Kleinschreibung}
+  \begin{enumerate}
+    \item Verwende \haskellinline{map}, um einen String in eine Liste von Bools zu verwandeln, die angeben, ob das entsprechende Zeichen im String ein Groß- oder Kleinbuchstabe war.
+    Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein. \\
+    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.}
+    \item Berechne die Anzahl der Kleinbuchstaben in einem gegebenen String.
+  \end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Typfehler}
+  Erkläre den Typfehler, der bei folgendem Ausdruck entsteht: \haskellinline{\x -> x x}
+\end{aufgabe}
 
 \section{Funktionsdefinitionen}
+
+\begin{aufgabe}{Fibonacci-Zahlen}
+  Die Fibonacci-Folge $0, 1, 1, 2, 3, 5, 8, \ldots$ ist bekanntermaßen rekursiv definiert durch:
+  \begin{center}
+    \emph{Die nullte Fibonacci-Zahl ist null, die erste Fibonacci-Zahl ist eins, \\
+    jede weitere Fibonacci-Zahl ist die Summe ihrer Vorgänger.}
+  \end{center}
+  \begin{enumerate}
+    \item Verwende diese Definition direkt, um eine Haskell-Funktion \haskellinline{fib :: Int -> Int} zu schreiben, die die $n$-te Fibonacci-Zahl berechnet.
+    \item Berechne \haskellinline{fib 35}. Was ist das Problem?
+    \item Implementiere \haskellinline{fibs :: [Int]}, eine unendliche Liste aller Fibonacci-Zahlen. Lass dir mit \haskellinline{take 100 fibs} die ersten hundert Folgeglieder in GHCi ausgeben. \\
+    {\scriptsize \emph{Hinweis.} Du bekommst massig Bonuspunkte, wenn du \haskellinline[fontsize=\scriptsize]{zipWith} verwendest.}
+  \end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Die Collatz-Vermutung}
+  % von https://de.wikipedia.org/wiki/Collatz-Problem
+  \begin{itemize}
+    \item Beginne mit irgendeiner natürlichen Zahl $n > 0$.
+    \item Ist n gerade, so nimm als Nächstes $\tfrac{n}{2}$,
+    \item Ist n ungerade, so nimm als Nächstes $3n + 1$.
+    \item Wiederhole die Vorgehensweise mit der erhaltenen Zahl.
+  \end{itemize}
+  Zum Beispiel erhält man für $n=19$ die Folge
+  \[ 19, 58, 29, 88, 44, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, \ldots \]
+  \begin{enumerate}
+    
+    \item Schreibe eine Funktion \haskellinline{collNext :: Int -> Int}, welche Collatz-Iteration durchführt.
+    \item Implementiere die Funktion \haskellinline{collSeq :: Int -> [Int]}, die die Folge der Collatz-Iterierten berechnet: \haskellinline{collSeq 10 = [10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, ...]}
+  \end{enumerate}
+  Die bisher ungelöste Collatz-Vermutung besagt, dass man ausgehend von jeder beliebigen Zahl $n$ irgendwann bei $1$ landet.
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Schreibe die Funktion \haskellinline{collTest :: Int -> Bool}, welche die Collatz-Vermutung für eine Eingabe $n$ testet. Falls die Collatz-Vermutung für $n$ falsch sein sollte, so muss die Funktion nicht terminieren.
+    \item Überprüfe die Collatz-Vermutung für alle natürlichen Zahlen kleiner als eine Million.
+  \end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Die Prelude}
+  Informiere dich, was folgende Funktionen aus der Standardbibliothek tun, und implementiere so viele wie du willst neu:
+  \begin{haskellcode}
+head, tail, init, last, length, reverse, (++), map, filter, intersperse,
+concat, zipWith, repeat, and, takeWhile, dropWhile, maximum
+  \end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Pointless/pointfree programming}
+  Vereinfache folgende Funktionsdefinitionen:
+  \begin{haskellcode}
+multMany a xs = map (\x -> a*x) xs
+filterMap f g xs = filter f (map g xs)
+  \end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Kettenbrüche}
+  Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
+  \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
+  mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}).
+\end{aufgabe}
+
+\begin{aufgabe}{Run-Length-Encoding}
+  Zur effizienten Speicherung von Daten mit vielen Zeichenwiederholungen bietet es sich an, nicht jedes einzelnes Zeichen, sondern Zeichen mit der jeweiligen Anzahl Wiederholungen zu speichern:
+  \begin{haskellcode*}{fontsize=\footnotesize,escapeinside=||}
+|\ghci| encode ['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e']
+[(4, 'a'), (1, 'b'), (2, 'c'), (2, 'a'), (1, 'd'), (4, 'e')]
+  \end{haskellcode*}
+  Implementiere die Funktion \haskellinline{encode :: String -> [(Int, Char)]} und die Umkehrfunktion \haskellinline{decode :: [(Int, Char)] -> String}!
+\end{aufgabe}
+
+\begin{aufgabe}{Longest subsequence}
+  Schreibe eine Funktion \haskellinline{longestSubsequence :: (a -> Bool) -> [a] -> [a]}.
+  Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob ein gewisser Benutzer an einem gegebenen Tag auf Github aktiv war, so berechnet \haskellinline{longestSubsequence xs p} die längste Strähne auf Github.
+\end{aufgabe}
+
+\begin{aufgabe}{Türme von Hanoi}
+  \begin{minipage}[m]{0.67 \linewidth}
+    Die Aufgabe bei Hanoi ist es, einen Turm von Scheiben von einem Steckplatz zu einem anderen zu transportieren. Dabei darf man nur je eine Scheibe einzeln bewegen und es darf niemals eine größere Scheibe auf einer kleineren liegen. Man hat einen Steckplatz als Zwischenlager zur Verfügung.
+    Implementiere eine Funktion \haskellinline{toh :: Int -> [(Int, Int)]}, welche die Hanoi-Züge (Bewegungen von einzelnen) berechnet, mit denen man einen Turm einer gewissen Größe von Steckplatz $1$ zu Steckplatz $3$ mit Steckplatz $2$ als Zwischenlager bewegen kann.
+  \end{minipage}
+  \begin{minipage}{0.32 \linewidth}
+    \hfill \includegraphics[width=5cm]{towers-hanoi.png}
+  \end{minipage}
+  
+  \begin{haskellcode*}{fontsize=\small,escapeinside=||}
+|\ghci| toh 3
+[(1,3), (1,2), (3,2), (1,3), (2,1), (2,3), (1,3)]
+  \end{haskellcode*}
+  
+  {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.}
+\end{aufgabe}
+
+\begin{aufgabe}{Origami}
+  Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder null, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
+\end{aufgabe}
 
 
 \section{Eigene Datentypen}

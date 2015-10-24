@@ -27,6 +27,7 @@
 \newminted{haskell}{}
 \definecolor{light-gray}{gray}{0.91}
 \newmintinline{haskell}{fontsize=\footnotesize,bgcolor=light-gray}
+\newmintinline{text}{fontsize=\footnotesize,bgcolor=light-gray}
 \usemintedstyle{tango}
 
 \RequirePackage{geometry}
@@ -77,6 +78,12 @@
   \textbf{Aufgabe \theaufgabennummer{}.} \emph{#1} \par
 }{\vspace{\aufgabenskip}}
 \newenvironment{aufgabeE}[1]{\begin{aufgabe}{#1}\begin{enumerate}}{\end{enumerate}\end{aufgabe}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\ghci}{\textcolor{lightgray}{Prelude>}}
 
 \clubpenalty=10000
 \widowpenalty=10000
