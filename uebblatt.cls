@@ -72,11 +72,7 @@
 \newlength{\aufgabenskip}
 \setlength{\aufgabenskip}{1.5em}
 \newcounter{aufgabennummer}
-\newenvironment{aufgabe}[2]{
-  \addtocounter{aufgabennummer}{1}
-  \textbf{Aufgabe \theaufgabennummer{}.} (#1) \emph{#2} \par
-}{\vspace{\aufgabenskip}}
-\newenvironment{aufgabe*}[1]{
+\newenvironment{aufgabe}[1]{
   \addtocounter{aufgabennummer}{1}
   \textbf{Aufgabe \theaufgabennummer{}.} \emph{#1} \par
 }{\vspace{\aufgabenskip}}
