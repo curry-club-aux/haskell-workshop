@@ -34,4 +34,215 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 \section{Typklassen}
 
 
+
+
+
+
+
+
+\begin{aufgabe}{Eigene Show-Instanzen}
+Für Debugging-Zwecke oder auch zum Datenaustausch ist die Show-Klasse nützlich,
+deren Definition in etwa die folgende ist:
+\begin{haskellcode}
+class Show a where
+    show :: a -> String
+\end{haskellcode}
+Bei der Deklaration eines neuen Datentyps hat man die Möglichkeit, mit einer
+\haskellinline{deriving}-Klausel den Compiler anzuweisen, automatisch eine
+geeignete Show-Instanz zu generieren:
+\begin{haskellcode}
+data Tree a = Nil | Fork a (Tree a) (Tree a)
+    deriving (Show)
+\end{haskellcode}
+In dieser Aufgabe aber sollst du den dafür nötigen Boilerplate-Code von Hand
+schreiben. Such dir einen Datentyp deiner Wahl aus und schreibe eine
+individuelle Show-Instanz für ihn.
+\end{aufgabe}
+
+\begin{aufgabe}{Die Monoid-Typklasse}
+Das Modul \haskellinline{Data.Monoid} definiert die Monoid-Typklasse:
+\begin{haskellcode}
+class Monoid a where
+    mempty  :: a
+    mappend :: a -> a -> a
+    mconcat :: [a] -> a
+\end{haskellcode}
+Ihr gehören solche Typen an, die eine sog. \emph{Monoidstruktur} tragen. (Wenn
+du diesen Begriff nicht kennst, dann frag kurz nach!) Das neutrale Element soll
+durch \haskellinline{mempty} angegeben werden, die Monoidoperation durch
+\haskellinline{mappend}. Die Funktion \haskellinline{mconcat} soll gleich
+mehrere Elemente miteinander verknüpfen.\footnote{Die Funktionen
+\haskellinline{mappend} und \haskellinline{mconcat} lassen sich gegenseitig
+ausdrücken. Fällt dir ein Grund ein, wieso trotzdem beide Funktionen Teil der
+Klasse sind? Hätte man nicht auch einfach \haskellinline{mconcat} außerhalb der
+Klasse definieren können?}
+
+\begin{enumerate}
+\item Gebe einer Nachimplementierung des Listen-Datentyps, etwa
+\haskellinline{data List a = Nil | Cons a (List a)} eine Monoid-Instanz.
+Vergiss nicht, zu Beginn deines Programmtexts mit \haskellinline{import
+Data.Monoid} die Definition der Monoid-Klasse zu laden.
+\item Implementiere folgende Funktion:
+\begin{haskellcode}
+cata :: (Monoid m) => (a -> m) -> ([a] -> m)
+\end{haskellcode}
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Sortierung nach mehreren Kriterien}
+Oft steht man vor folgendem Problem: Eine Liste von Dingen soll nach mehreren
+Kriterien sortiert werden. Etwa zunächst nach Nachname, unter gleichen
+Nachnamen aber nach Vorname und unter gleichem Namen nach Geburtsdatum. Die
+in Haskell idiomatische Herangehensweise an dieses Problem verwendet \ldots{}
+Monoide!
+
+\begin{enumerate}
+\item Schlage den \haskellinline{Ordering}-Typ nach.
+\item Reimplementiere die Funktion
+\begin{haskellcode}
+comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
+\end{haskellcode}
+aus dem Modul \haskellinline{Data.Ord}. Sie kann zum Beispiel so verwendet werden:
+\begin{haskellcode}
+import Data.List
+
+data Person = MkPerson
+    { lastName  :: String
+    , givenName :: String
+    , birthday  :: String
+    }
+    deriving (Show)
+
+sortPersons :: [Person] -> [Person]
+sortPersons = sortBy (comparing lastName)
+
+-- sortBy hat den Typ (a -> a -> Ordering) -> [a] -> [a].
+\end{haskellcode}
+\item Trägt ein Typ~\haskellinline{a} eine Monoidstruktur, so auch der
+Typ~\haskellinline{e -> a} der Funktionen von~\haskellinline{e}
+nach~\haskellinline{a}. Bestätige das, indem du folgenden Code vervollständigst:
+\begin{haskellcode}
+instance (Monoid a) => Monoid (e -> a) where
+    -- ...
+\end{haskellcode}
+Da diese Instanz schon in~\haskellinline{Data.Monoid} vordefiniert ist, musst
+du für diese Teilaufgabe den Import von\haskellinline{Data.Monoid} entfernen
+und die Monoid-Typklasse selbst definieren.
+\item Was macht folgender Code? Wieso tut er das? Informiere dich dazu über
+die Monoid-Instanz von \haskellinline{Ordering} und erinnere dich an die
+Monoid-Instanz von Funktionstypen.
+\begin{haskellcode}
+sortBy $ mconcat
+    [ comparing lastName
+    , comparing firstName
+    , comparing birthday
+    ]
+\end{haskellcode}
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Endliche Typen}
+Manche Typen fassen nur endlich viele Werte, zum Beispiel~\haskellinline{Bool}
+und~\haskellinline{Either Bool Bool}. Für solche Typen ist es gelegentlich
+praktisch, eine vollständige Liste ihrer Werte zu kennen. Aus diesem Grund
+führen wir folgende Klasse ein:
+\begin{haskellcode}
+class Finite a where
+    elems :: [a]
+\end{haskellcode}
+\begin{enumerate}
+\item Implementiere eine Finite-Instanz für~\haskellinline{Bool}.
+\item Implementiere folgende allgemeinen Instanzen:
+\begin{haskellcode}
+instance (Finite a, Finite b) => Finite (a,b)        where ...
+instance (Finite a, Finite b) => Finite (Maybe a)    where ...
+instance (Finite a, Finite b) => Finite (Either a b) where ...
+\end{haskellcode}
+\item Wenn du Lust auf eine Herausforderung hast, dann implementiere auch
+folgende Instanz. Sie ist für die weiteren Teilaufgaben aber nicht nötig.
+\begin{haskellcode}
+instance (Eq a, Finite a, Finite b) => Finite (a -> b) where ...
+\end{haskellcode}
+\item Implementiere eine Funktion \haskellinline{exhaustiveTest :: (Finite a) =>
+(a -> Bool) -> Bool}.
+\item Die Gleichheit zweier Funktionen (vom selben Typ) ist im Allgemeinen
+nicht entscheidbar, denn zwei Funktionen sind genau dann gleich, wenn sie auf
+allen Eingabewerten übereinstimmen. Um das zu überprüfen, muss man im
+Allgemeinen unendlich viele Fälle in Augenschein nehmen. Wenn der Quelltyp aber
+endlich ist, geht es doch. Implementiere also:
+\begin{haskellcode}
+instance (Finite a, Eq b) => Eq (a -> b) where ...
+\end{haskellcode}
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Abzählbare Typen}
+Manche Typen sind zwar nicht endlich, aber immer noch \emph{abzählbar}: Das
+heißt, dass es eine unendliche Liste gibt, in der alle Werte des Typs
+vorkommen. Zum Beispiel ist der Typ~\haskellinline{Integer} abzählbar, denn in
+der Liste~\haskellinline{[0, 1, -1, 2, -2, ...]} kommen alle ganzen Zahlen vor.
+\begin{enumerate}
+\item Definiere nach dem Vorbild der Finite-Typklasse aus der vorherigen
+Aufgabe eine Countable-Typklasse.
+\item Implementiere eine Countable-Instanz von~\haskellinline{Integer}.
+\item Vervollständige folgenden Code:
+\begin{haskellcode}
+instance (Countable a, Countable b) => Countable (a,b) where ...
+\end{haskellcode}
+\item Vervollständige folgenden Code (schwierig!):
+\begin{haskellcode}
+instance (Countable a) => Countable [a] where ...
+\end{haskellcode}
+Dabei soll~\haskellinline{[a]} für den Typ der endlichen Listen mit Werten
+in~\haskellinline{a} stehen -- obwohl der Typ~\haskellinline{[a]} ja auch
+unendliche Listen enthält. Solche \emph{sozialen Verträge} sind in Haskell
+leider gelegentlich nötig -- man benötigt abhängige Typen und andere
+Entwicklungen, um sie vollständig zu vermeiden. Sauberer wäre an dieser Stelle,
+einen neuen Datentyp~\haskellinline{FiniteList a} zu definieren, der isomorph
+zum gewöhnlichen Listentyp ist, aber den sozialen Vertrag an zentraler Stelle
+kundtut.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Überabzählbare Typen}
+Diese Aufgabe richtet sich nur an Leute, die das sog. \emph{Cantorsche
+Diagonalargument} und die \emph{Russelsche Antinomie} kennen. Sorry! Bei
+Gelegenheit suchen wir eine einführende Referenz.
+
+Wir definieren ein Typalias für Mengen:
+\begin{haskellcode}
+type Set a = a -> Bool
+
+-- Ist `f :: Set a`, so soll `f x == True` bedeuten, dass `x` in
+-- der Menge `f` liegt.
+\end{haskellcode}
+\begin{enumerate}
+\item Setze in diesem Modell die leere Menge, die Universalmenge (welche alle
+Werte überhaupt enthält) und die Menge, die nur ein bestimmtes Element enthält,
+um. Welche Voraussetzung an den Typ~\haskellinline{a} musst du im letzten Teil
+stellen?
+\item Implementiere folgende Funktionen:
+\begin{haskellcode}
+member       :: a     -> Set a -> Bool
+union        :: Set a -> Set a -> Set a
+intersection :: Set a -> Set a -> Set a
+complement   :: Set a -> Set a
+\end{haskellcode}
+\item Setze die Russelsche Antinomie in Haskell um. Definiere also eine Menge
+all derjenigen Mengen, die sich nicht selbst enthalten. Wie äußert sich das
+paradoxe Verhalten in Haskell?
+\item Setze das Cantorsche Diagonalargument in Haskell um. Definiere also eine
+Funktion
+\begin{haskellcode}
+cantor :: (a -> Set a) -> Set a
+\end{haskellcode}
+die folgendes leistet: Für jede Funktion~\haskellinline{f :: a -> Set a}
+soll~\haskellinline{cantor f} eine Menge sein, die nicht im Bild (in der
+Wertemenge) von~\haskellinline{f} enthalten ist.
+\item Bonusfrage zum Grübeln: Die vorherige Teilaufgabe zeigt, dass es in
+Haskell überabzählbare Typen gibt. Andererseits ist die Menge der
+Haskell-Programme abzählbar. Wie passt das zusammen?
+\end{enumerate}
+\end{aufgabe}
+
 \end{document}
