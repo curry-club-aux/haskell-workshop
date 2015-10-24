@@ -30,6 +30,102 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 
 \section{Eigene Datentypen}
 
+\begin{aufgabe}{Binäre Bäume}
+Im Folgenden verwenden wir folgende Definition für binäre Bäume, deren
+Verzweigungsknoten mit Werten vom Typ~\haskellinline{Int} dekoriert sind.
+\begin{haskellcode}
+data Tree = Nil | Fork Int Tree Tree
+    deriving (Show)
+\end{haskellcode}
+\begin{enumerate}
+\item Schreibe eine Funktion, die die Gesamtzahl Blätter eines Baums berechnet:
+\haskellinline{numberOfLeaves :: Tree -> Int}.
+\item Schreibe eine Funktion, die die Höchsttiefe eines Baums berechnet.
+\item Schreibe eine Funktion, die die Int-Werte der Verzweigungsknoten in einer
+Reihenfolge deiner Wahl als Liste zurückgibt.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Binäre Bäume bilden einen Funktor}
+\begin{enumerate}
+\item Verallgemeinere die vorherige Aufgaben auf Bäume, die Werte von
+einem beliebigen Typ~\haskellinline{a} statt~\haskellinline{Int} tragen.
+Vervollständige dazu zunächst folgende Definition:
+\begin{haskellcode}
+data Tree a = Nil | ...
+    deriving (Show)
+\end{haskellcode}
+\item Implementiere eine Funktion \haskellinline{tmap :: (a -> b) -> Tree a ->
+Tree b}.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Unendliche Bäume}
+\begin{enumerate}
+\item Schreibe eine Funktion \haskellinline{cutOff :: Int -> Tree a -> Tree a}, die eine
+Maximaltiefe und einen Baum als Argumente nimmt und einen neuen Baum
+zurückgibt, der sich aus dem gegebenen durch Abschneidung bei der gegebenen
+Maximaltiefe ergibt.
+\item Definiere eine Funktion, die eine unendliche Liste von Werten nimmt und
+einen Baum zurückgibt, auf dessen Verzweigungsknoten die Elemente der Liste
+sitzen. Suche dir selbst aus, in welcher Reihenfolge die Listenelemente auf dem
+Baum platziert werden sollen.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Der Stern--Brocot-Baum (für Fans von Kettenbrüchen)}
+Informiere dich auf Wikipedia über den Stern--Brocot-Baum und implementiere ein
+Haskell-Programm, dass diesen unendlichen Baum berechnet. Hole dir
+gegebenenfalls einen (stark spoilernden) Tipp ab.
+\end{aufgabe}
+
+\begin{aufgabe}{Termbäume}
+\begin{enumerate}
+\item Implementiere einen Datentyp für Funktionsterme. Zum Beispiel soll
+\[ (x \cdot x + 3) - x \]
+so repräsentiert werden: \haskellinline{Sub (Add (Mul Var Var) (Lit 3)) Var}.
+\item Schreibe eine Funktion \haskellinline{eval :: Exp -> Double -> Double},
+die in einem gegebenen Term für die Variable~$x$ einen konkreten Wert einsetzt.
+\item Schreibe eine Funktion \haskellinline{diff :: Exp -> Exp}, die
+einen gegebenen Funktionsterm ableitet. Zum Beispiel soll \haskellinline{diff
+(Mul Var Var)} im Wesentlichen äquivalent sein zu \haskellinline{Mul (Lit 2) Var}.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Isomorphe Typen}
+Manche Typen lassen sich verlustfrei ineinander umwandeln, zum Beispiel die
+folgenden beiden:
+\begin{haskellcode}
+data Bool    = False  | True  -- schon vordefiniert
+data Aussage = Falsch | Wahr
+\end{haskellcode}
+Man spricht in einem solchen Fall von \emph{zueinander isomorphen Typen}. Die
+Umwandlungsfunktionen heißen \emph{Isomorphismen} und können in diesem Fall wie
+folgt definiert werden:
+\begin{haskellcode}
+iso :: Bool -> Aussage
+iso False = Falsch
+iso True  = Wahr
+
+osi :: Aussage -> Bool
+osi Falsch = False
+osi Wahr   = True
+\end{haskellcode}
+Das charakteristische an diesen beiden Funktionen ist, dass~\haskellinline{osi
+. iso == id} und~\haskellinline{iso . osi == id}.
+
+Folgende Typen sind jeweils zueinander isomorph. Implementiere
+auf analoge Weise Funktionen~\haskellinline{iso} und~\haskellinline{osi}, die
+das bezeugen!
+\begin{enumerate}
+\item \haskellinline{(a, b)}          versus \haskellinline{(b, a)}
+\item \haskellinline{((a, b), c)}     versus \haskellinline{(a, (b, c))}
+\item \haskellinline{(a, Either b c)} versus \haskellinline{Either (a, b) (a, c)}
+\item \haskellinline{a -> (b, c)}     versus \haskellinline{(a -> b, a -> c)}
+\item \haskellinline{(a, b) -> c}     versus \haskellinline{(a -> b -> c)}
+\end{enumerate}
+\end{aufgabe}
+
 
 \section{Typklassen}
 
