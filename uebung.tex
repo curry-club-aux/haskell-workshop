@@ -132,6 +132,17 @@ filterMap f g xs = filter f (map g xs)
   Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder null, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
 \end{aufgabe}
 
+\begin{aufgabe}{Fizz buzz}
+  Beim Spiel \emph{Fizz buzz} stehen alle Spieler im Kreis. Reihum wird nun von eins hoch gezählt. Anstatt von Zahlen, die durch drei teilbar sind, muss man jedoch "`fizz"' sagen und "`buzz"' bei Zahlen, die durch fünf teilbar sind. Ist eine Zahl sowohl durch drei als auch durch fünf teilbar, so sagt man "`fizz buzz"'. Wer einen Fehler macht, scheidet aus.
+  
+  Implementiere die unendliche Liste
+  \begin{haskellcode}
+fizzbuzz :: [String]
+fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
+           , "11", "fizz", "13", "14", "fizz buzz", "16", ...]
+  \end{haskellcode}
+\end{aufgabe}
+
 
 \section{Eigene Datentypen}
 
