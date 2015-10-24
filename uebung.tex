@@ -377,4 +377,22 @@ müssen verwendet werden, und zwar jeweils genau einmal.
 \end{enumerate}
 \end{aufgabe}
 
+\section{Die IO Monade und andere Monaden}
+
+\begin{aufgabe}{IO Stringmanipulation}
+Schreibe ein Programm, das eine Zeichenkette einliest und diese ruckwärts wieder ausgibt. \haskellinline{reverse :: [a] -> [a]} könnte hilfreich sein, wenn du dir diese Funktion nicht selbst schreiben willst.
+\end{aufgabe}
+
+\begin{aufgabe}{Überprüfung von Nutzereingaben}
+Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis dieser eine Zahl angibt, die durch 3 teilbar ist. Erinnere dich an die Typklasse \haskellinline{Read}!
+\end{aufgabe}
+
+\begin{aufgabe}{Monadische Endlosschleife}
+Schreibe eine Funktion, die es erlaubt eine IO-Aktion unendlich oft zu wiederholen. Die Typsignatur sollte \haskellinline{forever :: (Monad m) => m a -> m b} sein. Erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!
+\end{aufgabe}
+
+\begin{aufgabe}{Zahlenratespiel}
+Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich der Nutzer ausgedacht hat. Der Nutzer soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer Binäeren Suche lösen.
+\end{aufgabe}
+
 \end{document}
