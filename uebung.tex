@@ -1,6 +1,5 @@
+% Kompilieren mit: pdflatex -shell-escape uebung
 \documentclass{uebblatt}
-
-\newcommand{\http}{http:/\kern-.2em/\kern-0.03em}
 
 \begin{document}
 
@@ -426,7 +425,6 @@ Gelegenheit suchen wir eine einführende Referenz.
 Wir definieren ein Typalias für Mengen:
 \begin{haskellcode}
 type Set a = a -> Bool
-
 -- Ist `f :: Set a`, so soll `f x == True` bedeuten, dass `x` in
 -- der Menge `f` liegt.
 \end{haskellcode}
@@ -484,7 +482,7 @@ Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die
 
 \section{Ideen für größere Projekte}
 
-\begin{aufgabe}{Unicode Smileys}
+\begin{aufgabe}{Unicode-Smileys}
 	Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode Smiley ersetzt. Auf unicode-table.com kannst du dir jeden Unicode-Smiley kopieren.
 
 	Wenn du die \haskellinline{IO}-Monade schon kennst, kannst du diese in einem Programm verwenden, das einen Text einliest und mit dieser Funktion alle Smileys ersetzt und den entstandenen Text ausgibt.
