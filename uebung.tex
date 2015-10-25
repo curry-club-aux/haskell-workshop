@@ -454,6 +454,8 @@ Wertemenge) von~\haskellinline{f} enthalten ist.
 \item Bonusfrage zum Grübeln: Die vorherige Teilaufgabe zeigt, dass es in
 Haskell überabzählbare Typen gibt. Andererseits ist die Menge der
 Haskell-Programme abzählbar. Wie passt das zusammen?
+\item Literatur dazu: ein toller Blog-Post von sigfpe.
+\url{http://blog.sigfpe.com/2008/01/type-that-should-not-be.html}
 \end{enumerate}
 \end{aufgabe}
 
@@ -480,6 +482,45 @@ Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis diese
 Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich die Nutzerin oder der Nutzer ausgedacht hat. Der Nutzende soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer binären Suche lösen.
 \end{aufgabe}
 
+\begin{aufgabe}{Die Reader-Monade}
+Gelegentlich muss ein bestimmter Werte durch viele Funktionen gefädelt werden,
+zum Beispiel ein Wert, der globale Konfigurationsoptionen enthält:
+\begin{haskellcode}
+f :: Config -> Int -> Char -> Bool -> Mumble
+f config x y z = ...g config x......h config y......z...
+
+g :: Config -> Int -> Gabambel
+g config x     = ...x...
+
+h :: Config -> Char -> Rainbow
+h config y     = ...p config y......y...
+
+p :: Config -> Char -> Lollipop
+p config y     = ...y...
+\end{haskellcode}
+Vielleicht findest du das nervig. Informiere dich über die Reader-Monade, mit
+der man das vermeiden kann. Die neuen Typsignaturen lauten dann:
+\begin{haskellcode}
+f :: Int -> Char -> Bool -> Reader Config Mumble
+g :: Int -> Reader Config Gabambel
+h :: Char -> Reader Config Rainbow
+p :: Char -> Reader Config Lollipop
+\end{haskellcode}
+Durch Verwendung von Typsynonymen, wie~\haskellinline{type R = Reader Config},
+könnte man den Code noch übersichtlicher gestalten. Zugriff auf den aktuellen
+Wert der implizit mitgeführten Konfiguration erhält man mit~\haskellinline{ask ::
+Reader Config Config}:
+\begin{haskellcode}
+foo :: FairyTale -> Reader Config MyLittlePony
+foo x = do
+    config <- ask
+    let y = ...x...
+    ...x...
+    return ...
+\end{haskellcode}
+\end{aufgabe}
+
+
 \section{Ideen für größere Projekte}
 
 \begin{aufgabe}{Unicode-Smileys}
@@ -499,6 +540,10 @@ Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die
 
 \begin{aufgabe}{Häufigkeitsanalyse auf Listen}
 	Schreibe eine Funktion \haskellinline{freqAn : Eq a => [a] -> [(a, Int)]}, die eine Liste von Tupeln aus einem Element der Eingabeliste und dessen Häufigkeit zurückgibt. Zum Beispiel wäre \haskellinline{freqAn "Hallo" == [('H', 1), ('a', 1), ('l', 2), ('o', 1)]}, wobei die Sortierung egal ist.
+\end{aufgabe}
+
+\begin{aufgabe}{Kleine interaktive Konsolenspiele}
+Wenn du schon besser mit IO in Haskell vertraut bist, versuche kleine Konsolenspiele, wie Hangman, Vier gewinnt oder Tic-Tac-Toe, zu implementieren!
 \end{aufgabe}
 
 \begin{aufgabe}{Ein Zahlenrätsel}
@@ -534,9 +579,86 @@ müssen verwendet werden, und zwar jeweils genau einmal.
 \end{enumerate}
 \end{aufgabe}
 
-\begin{aufgabe}{Kleine interaktive Konsolenspiele}
-Wenn du schon besser mit IO in Haskell vertraut bist, versuche kleine Konsolenspiele, wie Hangman, Vier gewinnt oder Tic-Tac-Toe, zu implementieren!
+\begin{aufgabe}{Das Apfelmännchen-Fraktal}
+\begin{enumerate}
+\item Informiere dich zunächst auf Wikipedia, wie man das Apfelmännchen-Fraktal
+theoretisch berechnet.
+\item Implementiere die komplexen Zahlen in Haskell. Wenn du diesen Schritt
+überspringen möchtest, dann importiere einfach~\haskellinline{Data.Complex}.
+Andernfalls definiere einen eigenen Datentyp für komplexe Zahlen und versehe
+ihn mit einer Num-Instanz.
+\item Schreibe ein Haskell-Programm, das das Apfelmännchen-Fraktal in
+glorreicher 80x25-Auflösung plottet.
+\end{enumerate}
+\begin{tiny}\begin{verbatim}
+                                                            *
+                                                         *****
+                                                        *******
+                                                         ******
+                                                       * **  *
+                                               **   ****************
+                                               ***********************  **
+                                               ***************************
+                                             ****************************
+                                            ******************************
+                                          ***********************************
+                                          **********************************
+                           ** *** *       **********************************
+                           ***********   ***********************************
+                         ************** ************************************
+                         ***************************************************
+                     *****************************************************
+       *          ******************************************************
+                     *****************************************************
+                         ***************************************************
+                         ************** ************************************
+                           ***********   ***********************************
+                           ** *** *       **********************************
+                                          **********************************
+                                          ***********************************
+                                            ******************************
+                                             ****************************
+                                               ***************************
+                                               ***********************  **
+                                               **   ****************
+                                                       * **  *
+                                                         ******
+                                                        *******
+                                                         *****
+                                                            *
+\end{verbatim}\end{tiny}
 \end{aufgabe}
 
+\begin{aufgabe}{Das ungetypte Lambda-Kalkül}
+\begin{enumerate}
+\item Informiere dich auf Wikipedia, was das ungetypte Lambda-Kalkül ist.
+Verwende folgende Definition, um Terme des Lambda-Kalküls in Haskell
+abzubilden:
+\begin{haskellcode}
+type Name = String  -- nur ein Typsynonym
+data Exp
+    = App Exp  Exp
+    | Lam Name Exp
+    | Var Name
+    deriving (Show)
+\end{haskellcode}
+Die Identitätsfunktion~\haskellinline{\x -> x} wird dann
+durch~\haskellinline{Lam "x" (Var "x")} dargestellt. Die
+Funktion~\haskellinline{\f -> \x -> f x} durch~\haskellinline{Lam "f" $ Lam "x"
+$ App (Var "f") (Var "x")}.
+\item Mache dich mit dem Modul~\haskellinline{Data.Map} vertraut.
+\item Implementiere einen Evaluator für das ungetypte Lambda-Kalkül, also eine
+Funktion \haskellinline{eval :: Env -> Exp -> Exp}. Dabei
+ist~\haskellinline{Env} ein weiteres Typsynonym, das den Typ der
+mitzuschleppenden \emph{Umgebung} angibt:
+\begin{haskellcode}
+type Env = M.Map Name Exp
+\end{haskellcode}
+\item Bewundere die Schönheit des Y-Kombinators.
+\item Reimplementiere den Evaluator unter Benutzung der Reader-Monade. Die
+Typsignatur von~\haskellinline{eval} soll dann~\haskellinline{Exp -> Reader Env
+Exp} sein.
+\end{enumerate}
+\end{aufgabe}
 
 \end{document}
