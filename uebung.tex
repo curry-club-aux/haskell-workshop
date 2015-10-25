@@ -482,11 +482,18 @@ Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die
 \section{Ideen für größere Projekte}
 
 \begin{aufgabe}{Unicode Smileys}
-Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode Smiley ersetzt.
+Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode Smiley ersetzt. Auf unicode-table.com kannst du dir jeden Unicode-Smiley kopieren.
 
 Wenn du die \haskellinline{IO}-Monade schon kennst, kannst du diese in einem Programm verwenden, das einen Text einliest und mit dieser Funktion alle Smileys ersetzt und den entstandenen Text ausgibt.
 \end{aufgabe}
 
+\begin{aufgabe}{Einfache Verschlüsselung}
+Implementiere einen einfachen Verschlüsselungsalgorithmus deiner Wahl, etwa:
+\begin{enumerate}
+	\item Die Cäsarverschlüsselung, also Verschiebung des Alphabets: \haskellinline{rot :: Integer -> String -> String}. Die Implementation soll folgendes Gesetz erfüllen: \haskellinline{rot (-n) (rot n "foobar") == "foobar"}.
+		Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \haskellinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks!
+\end{enumerate}
+\end{aufgabe}
 \begin{aufgabe}{Ein Zahlenrätsel}
 Wie muss man die Zahlen~1,~3,~4 und~6 mit Klammern und den Operatoren
 \haskellinline{+ * - /} ergänzen, damit das Ergebnis~24 ist? Die Zahlen dürfen
