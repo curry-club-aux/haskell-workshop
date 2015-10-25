@@ -28,6 +28,7 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
     \item Verwende \haskellinline{map}, um einen String in eine Liste von Bools zu verwandeln, die angeben, ob das entsprechende Zeichen im String ein Groß- oder Kleinbuchstabe war.
     Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein. \\
     {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.}
+    \item Schreibe eine Funktion, die für einen String zurückgibt, ob er nur Kleinbuchstaben enthält.
     \item Berechne die Anzahl der Kleinbuchstaben in einem gegebenen String.
   \end{enumerate}
 \end{aufgabe}
@@ -514,10 +515,10 @@ Das Beispiel könnte dabei durch~\haskellinline{Add (Lit 3) (Div (Sub (Lit 1)
 \item Schreibe eine Funktion~\haskellinline{groups :: [a] -> [([a],[a])]}, die
 folgendes leistet: Gegeben eine Liste, berechnet alle Möglichkeiten, diese Liste in zwei
 Teile zu zerlegen: einen vorderen und einen hinteren. Zum Beispiel:
-\begin{haskellcode}
-> groups "abc"
+\begin{haskellcode*}{escapeinside=||}
+|\ghci| groups "abc"
 [("abc",""),("ab","c"),("a","bc"),("","abc")]
-\end{haskellcode}
+\end{haskellcode*}
 \item Schreibe eine Funktion~\haskellinline{arb :: [a] -> [Exp a]}, die
 folgendes leistet: Gegeben eine Liste~\haskellinline{xs} von (zum Beispiel)
 Zahlen, gibt eine Liste von allen Termbäumen zurück, an deren Blättern (in
