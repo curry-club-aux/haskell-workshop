@@ -13,7 +13,7 @@ Benutze die vordefinierten Funktionen \haskellinline{fst :: (a, b) -> a} und \ha
 \end{aufgabe}
 
 \begin{aufgabe}{Medianbestimmung}
-Sei \haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das mittlere Element in einer Sortierung der Liste) von \haskellinline{xs} berechnet. Verwende dazu \haskellinline{length}, \haskellinline{div} und \haskellinline{!!}.
+Sei \haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das mittlere Element in einer Sortierung der Liste) von \haskellinline{xs} berechnet. Verwende dazu die Funktion \haskellinline{Data.List.sort}, \haskellinline{length}, \haskellinline{div} und \haskellinline{!!}.
 \end{aufgabe}
 
 \begin{aufgabe}{Der Smiley-Operator erster Ordnung}
@@ -457,43 +457,9 @@ Haskell-Programme abzählbar. Wie passt das zusammen?
 \end{enumerate}
 \end{aufgabe}
 
-\section{Die IO-Monade und andere Monaden}
-
-\begin{aufgabe}{IO-Stringmanipulation}
-Schreibe ein Programm, das eine Zeichenkette einliest und diese ruckwärts wieder ausgibt. Die Funktion~\haskellinline{reverse :: [a] -> [a]} könnte hilfreich sein, wenn du dir sie nicht selbst schreiben willst.
-\end{aufgabe}
-
-\begin{aufgabe}{Überprüfung von Nutzereingaben}
-Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis dieser eine Zahl angibt, die durch~3 teilbar ist. Erinnere dich an die Typklasse \haskellinline{Read}!
-\end{aufgabe}
-
-\begin{aufgabe}{Monadische Schleifen}
-\begin{enumerate}
-\item Schreibe eine Funktion, die eine gegebene IO-Aktion (oder eine andere Art Aktion) eine gewisse Anzahl von Malen wiederholt. Die Typsignatur sollte also \haskellinline{replicateM :: Int -> [IO a] -> IO [a]} (oder allgemeiner \haskellinline{replicateM :: (Monad m) => Int -> [m a] -> m [a]} -- erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!) sein.
-\item Schreibe eine Funktion \haskellinline{forM :: (Monad m) => [a] -> (a -> m b) -> m [b]} die das tut, was ihr Name und ihre Typsignatur versprechen.
-\item Schreibe eine Funktion, die es erlaubt, eine IO-Aktion (oder eine andere Art Aktion) unendlich oft zu wiederholen. Die Typsignatur sollte \haskellinline{forever :: (Monad m) => m a -> m b} sein. Erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!
-\end{enumerate}
-\end{aufgabe}
-
-\begin{aufgabe}{Zahlenratespiel}
-Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich die Nutzerin oder der Nutzer ausgedacht hat. Der Nutzende soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer binären Suche lösen.
-\end{aufgabe}
 
 \section{Ideen für größere Projekte}
 
-\begin{aufgabe}{Unicode Smileys}
-Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode Smiley ersetzt. Auf unicode-table.com kannst du dir jeden Unicode-Smiley kopieren.
-
-Wenn du die \haskellinline{IO}-Monade schon kennst, kannst du diese in einem Programm verwenden, das einen Text einliest und mit dieser Funktion alle Smileys ersetzt und den entstandenen Text ausgibt.
-\end{aufgabe}
-
-\begin{aufgabe}{Einfache Verschlüsselung}
-Implementiere einen einfachen Verschlüsselungsalgorithmus deiner Wahl, etwa:
-\begin{enumerate}
-	\item Die Cäsarverschlüsselung, also Verschiebung des Alphabets: \haskellinline{rot :: Integer -> String -> String}. Die Implementation soll folgendes Gesetz erfüllen: \haskellinline{rot (-n) (rot n "foobar") == "foobar"}.
-		Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \haskellinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks!
-\end{enumerate}
-\end{aufgabe}
 \begin{aufgabe}{Ein Zahlenrätsel}
 Wie muss man die Zahlen~1,~3,~4 und~6 mit Klammern und den Operatoren
 \haskellinline{+ * - /} ergänzen, damit das Ergebnis~24 ist? Die Zahlen dürfen
@@ -527,5 +493,27 @@ müssen verwendet werden, und zwar jeweils genau einmal.
 \end{enumerate}
 \end{aufgabe}
 
+
+\section{Die IO-Monade und andere Monaden}
+
+\begin{aufgabe}{IO-Stringmanipulation}
+Schreibe ein Programm, das eine Zeichenkette einliest und diese ruckwärts wieder ausgibt. Die Funktion~\haskellinline{reverse :: [a] -> [a]} könnte hilfreich sein, wenn du dir sie nicht selbst schreiben willst.
+\end{aufgabe}
+
+\begin{aufgabe}{Überprüfung von Nutzereingaben}
+Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis dieser eine Zahl angibt, die durch~3 teilbar ist. Erinnere dich an die Typklasse \haskellinline{Read}!
+\end{aufgabe}
+
+\begin{aufgabe}{Monadische Schleifen}
+\begin{enumerate}
+\item Schreibe eine Funktion, die eine gegebene IO-Aktion (oder eine andere Art Aktion) eine gewisse Anzahl von Malen wiederholt. Die Typsignatur sollte also \haskellinline{replicateM :: Int -> [IO a] -> IO [a]} (oder allgemeiner \haskellinline{replicateM :: (Monad m) => Int -> [m a] -> m [a]} -- erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!) sein.
+\item Schreibe eine Funktion \haskellinline{forM :: (Monad m) => [a] -> (a -> m b) -> m [b]} die das tut, was ihr Name und ihre Typsignatur versprechen.
+\item Schreibe eine Funktion, die es erlaubt, eine IO-Aktion (oder eine andere Art Aktion) unendlich oft zu wiederholen. Die Typsignatur sollte \haskellinline{forever :: (Monad m) => m a -> m b} sein. Erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Zahlenratespiel}
+Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich die Nutzerin oder der Nutzer ausgedacht hat. Der Nutzende soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer binären Suche lösen.
+\end{aufgabe}
 
 \end{document}
