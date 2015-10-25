@@ -124,7 +124,8 @@ filterMap f g xs = filter f (map g xs)
 \begin{aufgabe}{Kettenbrüche}
   Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
   \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
-  mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}).
+  mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}). \\
+  {\scriptsize \emph{Hinweis.} Du wirst die Funktionen \haskellinline[fontsize=\scriptsize]{floor :: Double -> Int} und \haskellinline[fontsize=\scriptsize]{fromIntegral :: Int -> Double} brauchen.}
 \end{aufgabe}
 
 \begin{aufgabe}{Türme von Hanoi}
