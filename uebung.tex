@@ -38,6 +38,21 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 
 \section{Funktionsdefinitionen}
 
+\begin{aufgabe}{Fizz buzz}
+  Beim Spiel \emph{Fizz buzz} stehen alle Spieler im Kreis. Reihum wird nun von eins hoch gezählt. Anstatt von Zahlen, die durch drei teilbar sind, muss man jedoch "`fizz"' sagen und "`buzz"' bei Zahlen, die durch fünf teilbar sind. Ist eine Zahl sowohl durch drei als auch durch fünf teilbar, so sagt man "`fizz buzz"'. Wer einen Fehler macht, scheidet aus.
+  
+  Implementiere die unendliche Liste
+  \begin{haskellcode}
+fizzbuzz :: [String]
+fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
+           , "11", "fizz", "13", "14", "fizz buzz", "16", ...]
+  \end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Origami}
+  Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder null, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
+\end{aufgabe}
+
 \begin{aufgabe}{Fibonacci-Zahlen}
   Die Fibonacci-Folge $0, 1, 1, 2, 3, 5, 8, \ldots$ ist bekanntermaßen rekursiv definiert durch:
   \begin{center}
@@ -91,12 +106,6 @@ filterMap f g xs = filter f (map g xs)
   \end{haskellcode}
 \end{aufgabe}
 
-\begin{aufgabe}{Kettenbrüche}
-  Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
-  \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
-  mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}).
-\end{aufgabe}
-
 \begin{aufgabe}{Run-Length-Encoding}
   Zur effizienten Speicherung von Daten mit vielen Zeichenwiederholungen bietet es sich an, nicht jedes einzelnes Zeichen, sondern Zeichen mit der jeweiligen Anzahl Wiederholungen zu speichern:
   \begin{haskellcode*}{fontsize=\footnotesize,escapeinside=||}
@@ -109,6 +118,12 @@ filterMap f g xs = filter f (map g xs)
 \begin{aufgabe}{Longest subsequence}
   Schreibe eine Funktion \haskellinline{longestSubsequence :: (a -> Bool) -> [a] -> [a]}.
   Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob ein gewisser Benutzer an einem gegebenen Tag auf Github aktiv war, so berechnet \haskellinline{longestSubsequence xs p} die längste Strähne auf Github.
+\end{aufgabe}
+
+\begin{aufgabe}{Kettenbrüche}
+  Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
+  \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
+  mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}).
 \end{aufgabe}
 
 \begin{aufgabe}{Türme von Hanoi}
@@ -126,21 +141,6 @@ filterMap f g xs = filter f (map g xs)
   \end{haskellcode*}
   
   {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.}
-\end{aufgabe}
-
-\begin{aufgabe}{Origami}
-  Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder null, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
-\end{aufgabe}
-
-\begin{aufgabe}{Fizz buzz}
-  Beim Spiel \emph{Fizz buzz} stehen alle Spieler im Kreis. Reihum wird nun von eins hoch gezählt. Anstatt von Zahlen, die durch drei teilbar sind, muss man jedoch "`fizz"' sagen und "`buzz"' bei Zahlen, die durch fünf teilbar sind. Ist eine Zahl sowohl durch drei als auch durch fünf teilbar, so sagt man "`fizz buzz"'. Wer einen Fehler macht, scheidet aus.
-  
-  Implementiere die unendliche Liste
-  \begin{haskellcode}
-fizzbuzz :: [String]
-fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
-           , "11", "fizz", "13", "14", "fizz buzz", "16", ...]
-  \end{haskellcode}
 \end{aufgabe}
 
 
