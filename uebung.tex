@@ -156,7 +156,7 @@ data Tree = Nil | Fork Int Tree Tree
     deriving (Show)
 \end{haskellcode}
 \begin{enumerate}
-\item Schreibe eine Funktion, die die Gesamtzahl Blätter eines Baums berechnet:
+\item Schreibe eine Funktion, die die Gesamtzahl Blätter eines Baums berechnet: \\
 \haskellinline{numberOfLeaves :: Tree -> Int}.
 \item Schreibe eine Funktion, die die Höchsttiefe eines Baums berechnet.
 \item Schreibe eine Funktion, die die Int-Werte der Verzweigungsknoten in einer
@@ -240,7 +240,7 @@ das bezeugen!
 \item \haskellinline{((a, b), c)}     versus \haskellinline{(a, (b, c))}
 \item \haskellinline{(a, Either b c)} versus \haskellinline{Either (a, b) (a, c)}
 \item \haskellinline{a -> (b, c)}     versus \haskellinline{(a -> b, a -> c)}
-\item \haskellinline{(a, b) -> c}     versus \haskellinline{(a -> b -> c)}
+\item \haskellinline{(a, b) -> c}     versus \haskellinline{a -> b -> c}
 \end{enumerate}
 \end{aufgabe}
 
