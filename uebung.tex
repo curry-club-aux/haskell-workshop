@@ -5,6 +5,7 @@
 
 \maketitle{1}{Learn You a Haskell for Great Good!}
 
+
 \section{Aufwärmübungen in GHCi}
 
 \begin{aufgabe}{Verschachtelte Tupel}
@@ -26,7 +27,7 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
   \begin{enumerate}
     \item Verwende \haskellinline{map}, um einen String in eine Liste von Bools zu verwandeln, die angeben, ob das entsprechende Zeichen im String ein Groß- oder Kleinbuchstabe war.
     Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein. \\
-    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.}
+    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.\par}
     \item Schreibe eine Funktion, die für einen String zurückgibt, ob er nur Kleinbuchstaben enthält.
     \item Berechne die Anzahl der Kleinbuchstaben in einem gegebenen String.
   \end{enumerate}
@@ -35,6 +36,7 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 \begin{aufgabe}{Typfehler}
   Erkläre den Typfehler, der bei folgendem Ausdruck entsteht: \haskellinline{\x -> x x}
 \end{aufgabe}
+
 
 \section{Funktionsdefinitionen}
 
@@ -63,7 +65,7 @@ fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
     \item Verwende diese Definition direkt, um eine Haskell-Funktion \haskellinline{fib :: Int -> Int} zu schreiben, die die $n$-te Fibonacci-Zahl berechnet.
     \item Berechne \haskellinline{fib 35}. Was ist das Problem?
     \item Implementiere \haskellinline{fibs :: [Int]}, eine unendliche Liste aller Fibonacci-Zahlen. Lass dir mit \haskellinline{take 100 fibs} die ersten hundert Folgeglieder in GHCi ausgeben. \\
-    {\scriptsize \emph{Hinweis.} Du bekommst massig Bonuspunkte, wenn du \haskellinline[fontsize=\scriptsize]{zipWith} verwendest.}
+    {\scriptsize \emph{Hinweis.} Du bekommst massig Bonuspunkte, wenn du \haskellinline[fontsize=\scriptsize]{zipWith} verwendest.\par}
   \end{enumerate}
 \end{aufgabe}
 
@@ -115,16 +117,16 @@ filterMap f g xs = filter f (map g xs)
   Implementiere die Funktion \haskellinline{encode :: String -> [(Int, Char)]} und die Umkehrfunktion \haskellinline{decode :: [(Int, Char)] -> String}!
 \end{aufgabe}
 
-\begin{aufgabe}{Longest subsequence}
+\begin{aufgabe}{Längste Teilfolge}
   Schreibe eine Funktion \haskellinline{longestSubsequence :: (a -> Bool) -> [a] -> [a]}.
-  Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob ein gewisser Benutzer an einem gegebenen Tag auf Github aktiv war, so berechnet \haskellinline{longestSubsequence xs p} die längste Strähne auf Github.
+  Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob eine gewisse Benutzerin an einem gegebenen Tag auf GitHub aktiv war, so berechnet \haskellinline{longestSubsequence xs p} die längste Strähne auf GitHub.
 \end{aufgabe}
 
 \begin{aufgabe}{Kettenbrüche}
   Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
   \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
   mit $b_0 \in \Z$ und $b_i \in \N$, $i \geq 1$ geschrieben werden. Überlege dir einen Algorithmus, der die unendliche Folge der $b_i$'s berechnet und implementiere ihn in Haskell. Überprüfe deinen Algorithmus anhand der Kettenbruchentwicklung von $\pi$ (in Haskell: \haskellinline{pi}). \\
-  {\scriptsize \emph{Hinweis.} Du wirst die Funktionen \haskellinline[fontsize=\scriptsize]{floor :: Double -> Int} und \haskellinline[fontsize=\scriptsize]{fromIntegral :: Int -> Double} brauchen.}
+  {\scriptsize \emph{Hinweis.} Du wirst die Funktionen \haskellinline[fontsize=\scriptsize]{floor :: Double -> Int} und \haskellinline[fontsize=\scriptsize]{fromIntegral :: Int -> Double} brauchen.\par}
 \end{aufgabe}
 
 \begin{aufgabe}{Türme von Hanoi}
@@ -141,7 +143,7 @@ filterMap f g xs = filter f (map g xs)
 [(1,3), (1,2), (3,2), (1,3), (2,1), (2,3), (1,3)]
   \end{haskellcode*}
   
-  {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.}
+  {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.\par}
 \end{aufgabe}
 
 
@@ -245,13 +247,6 @@ das bezeugen!
 
 
 \section{Typklassen}
-
-
-
-
-
-
-
 
 \begin{aufgabe}{Eigene Show-Instanzen}
 Für Debugging-Zwecke oder auch zum Datenaustausch ist die Show-Klasse nützlich,
