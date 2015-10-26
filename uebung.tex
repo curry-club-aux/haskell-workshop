@@ -50,14 +50,14 @@ fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
 \end{aufgabe}
 
 \begin{aufgabe}{Origami}
-  Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder null, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
+  Implementiere eine Funktion \haskellinline{maximum' :: [Int] -> Int}, die die größte Zahl in einer Liste zurückliefert oder~\haskellinline{0}, falls die Liste leer ist oder alle Zahlen negativ sind. Verwende dazu \haskellinline{foldl :: (b -> a -> b) -> b -> [a] -> b}.
 \end{aufgabe}
 
 \begin{aufgabe}{Fibonacci-Zahlen}
   Die Fibonacci-Folge $0, 1, 1, 2, 3, 5, 8, \ldots$ ist bekanntermaßen rekursiv definiert durch:
   \begin{center}
     \emph{Die nullte Fibonacci-Zahl ist null, die erste Fibonacci-Zahl ist eins, \\
-    jede weitere Fibonacci-Zahl ist die Summe ihrer Vorgänger.}
+    jede weitere Fibonacci-Zahl ist die Summe ihrer beiden Vorgänger.}
   \end{center}
   \begin{enumerate}
     \item Verwende diese Definition direkt, um eine Haskell-Funktion \haskellinline{fib :: Int -> Int} zu schreiben, die die $n$-te Fibonacci-Zahl berechnet.
