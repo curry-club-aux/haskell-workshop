@@ -148,6 +148,68 @@ filterMap f g xs = filter f (map g xs)
   {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.\par}
 \end{aufgabe}
 
+\begin{aufgabe}{Strikte und nicht-strikte Funktionen}
+Eine Haskell-Funktion~\haskellinline{f :: A -> B} heißt genau dann
+\emph{strikt}, wenn sie, angewendet auf einen nicht-terminierenden Ausdruck,
+selbst nicht terminiert. In Symbolen schreibt man das gerne
+so:~$f \bot = \bot$.
+
+Nicht-terminierende Ausdrücke sind zum Beispiel:
+\begin{itemize}
+\item \haskellinline{undefined}
+\item \haskellinline{error "Division durch Null"}
+\item \haskellinline{last [0..]}
+\end{itemize}
+
+Zum Beispiel ist die Funktion~\haskellinline{id :: Char -> Char} strikt.
+Der \emph{Robot Monkey Operator}, die Funktion~\haskellinline{(:[]) :: Char ->
+[Char]}, ist es dagegen nicht. In den meisten Programmiersprachen ist jede
+Funktion strikt, in Haskell jedoch nicht.
+
+Welche der folgenden Funktionen sind strikt, welche nicht?
+\begin{enumerate}
+\item \haskellinline{reverse :: [a] -> [a]}
+\item \haskellinline{("abc" ++) :: [Char] -> [Char]}
+\item \haskellinline{(++ "abc") :: [Char] -> [Char]}
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Der Fixpunktoperator}
+Im Modul \haskellinline{Control.Monad.Fix} ist folgende Funktion vordefiniert
+(welche noch nichts mit Monaden zu tun hat):
+\begin{haskellcode}
+fix :: (a -> a) -> a
+fix f = let x = f x in x
+-- alternative Schreibweise:
+-- fix f = x where x = f x
+\end{haskellcode}
+Diese Funktion berechnet von einer gegebenen Funktion~\haskellinline{f} ihren
+\emph{kleinsten Fixpunkt} -- das ist ein Wert~\haskellinline{x :: a},
+sodass~\haskellinline{f x} gleich~\haskellinline{x} ist. Gibt es mehrere
+solcher Fixpunkte, so berechnet~\haskellinline{fix} den "`am wenigsten
+definierten"' (das ist mit "`kleinstem"' gemeint). Anschaulich kann man
+sich~\haskellinline{fix f} als~\haskellinline{f (f (f (...)))} vorstellen.
+
+\begin{enumerate}
+\item Was ist~\haskellinline{fix ('a':)}?
+\item Was ist~\haskellinline{fix ("abc" ++)}?
+\item Was ist~\haskellinline{fix id}? Was ist allgemeiner der kleinste Fixpunkt
+einer strikten Funktion?
+\item Was ist~\haskellinline{fix $ \xs -> 0 : 1 : zipWith (+) xs (tail xs)}?
+\item Wieso berechnet folgender Code die Fibonacci-Zahlen?
+\begin{haskellcode}
+fib :: Integer -> Integer
+fib = fix $ \fib' n ->
+    case n of
+        0         -> 0
+        1         -> 1
+        otherwise -> fib' (n-1) + fib' (n-2)
+\end{haskellcode}
+\item Wenn du Spaß an solchen Dingen findest, entziffere auch noch folgenden Code:
+\haskellinline{fix $ (0:) . scanl (+) 1}
+\end{enumerate}
+\end{aufgabe}
+
 
 \section{Eigene Datentypen}
 
