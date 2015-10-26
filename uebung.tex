@@ -160,8 +160,19 @@ Nicht-terminierende Ausdrücke sind zum Beispiel:
 \item \haskellinline{error "Division durch Null"}
 \item \haskellinline{last [0..]}
 \end{itemize}
+\emph{Keine} Beispiele für nicht-terminierende Ausdrücke sind:
+\begin{itemize}
+\item \haskellinline{"abc"}
+\item \haskellinline{[0..]}
+\item \haskellinline{['a', undefined, 'b']}
+\end{itemize}
+Dass auch die letzten beiden Ausdrücke keine nicht-terminierenden Ausdrücke
+sind, kann man sich so klarmachen: Mit ihnen kann man prima arbeiten, ohne
+Endlosschleifen zu produzieren. Zum Beispiel ist~\haskellinline{length
+['a', undefined, 'b']} kein Fehler, sondern einfach~\haskellinline{3} (in das
+mittlere Element der Liste muss nicht hineingeschaut werden).
 
-Zum Beispiel ist die Funktion~\haskellinline{id :: Char -> Char} strikt.
+Die Funktion~\haskellinline{id :: Char -> Char} ist strikt.
 Der \emph{Robot Monkey Operator}, die Funktion~\haskellinline{(:[]) :: Char ->
 [Char]}, ist es dagegen nicht. In den meisten Programmiersprachen ist jede
 Funktion strikt, in Haskell jedoch nicht.
