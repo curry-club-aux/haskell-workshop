@@ -401,7 +401,6 @@ data Person = MkPerson
 
 sortPersons :: [Person] -> [Person]
 sortPersons = sortBy (comparing lastName)
-
 -- sortBy hat den Typ (a -> a -> Ordering) -> [a] -> [a].
 \end{haskellcode}
 \item Trägt ein Typ~\haskellinline{a} eine Monoidstruktur, so auch der
@@ -606,7 +605,7 @@ foo x = do
 	Implementiere einen einfachen Verschlüsselungsalgorithmus deiner Wahl, etwa:
 	\begin{enumerate}
 		\item Die Cäsarverschlüsselung, also Verschiebung des Alphabets: \haskellinline{rot :: Integer -> String -> String}. Die Implementation soll folgendes Gesetz erfüllen: \haskellinline{rot (-n) (rot n "foobar") == "foobar"}.
-            Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \haskellinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks! Beispiel: \haskellinline{rot 3 "hallo"} evaluiert zu \haskellinline {"kdoor"}.
+            Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \haskellinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks! Beispiel: \haskellinline{rot 3 "hallo"} evaluiert zu \haskellinline{"kdoor"}.
         \item Die Vigenèreverschlüsselung. Die funktioniert wie die Cäsarverschlüsselung, nur dass es mehrere "Schlüssel" (\haskellinline{Integer}) gibt, für jeden \haskellinline{Char} einen: \haskellinline{vigenère :: [Integer] -> String -> String}. Sollten die \haskellinline{Integer} nicht ausreichen, wird wieder beim ersten angefangen. Nützlich ist die Funktion \haskellinline{cycle :: [a] -> [a]}, die aus einer Liste eine unendliche macht, indem sie immer wieder wiederholt wird. Beispiel: \haskellinline{vigenère [1,2,3] "hallo"} evaluiert zu \haskellinline{"icomq"}.
 	\end{enumerate}
 \end{aufgabe}
