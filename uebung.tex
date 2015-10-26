@@ -725,4 +725,45 @@ Exp} sein.
 \end{enumerate}
 \end{aufgabe}
 
+\begin{aufgabe}{Das Programm, das nicht sein darf}
+Sei~\haskellinline{f :: [Bool] -> Bool} ein Prädikat über unendliche Listen
+von Bools. Wäre es nicht toll, wenn es ein Programm gäbe, das herausfindet,
+ob es eine Bitfolge gibt, auf der~\haskellinline{f} \haskellinline{True}
+liefert? Und wenn ja, eine solche Bitfolge auch noch berechnet? Scheint das
+angesichts der Tatsache, dass es doch (sogar übabzählbar) unendlich viele
+Bitfolgen gibt, unmöglich?
+
+Folgendes Programm leistet das Gewünschte. Entziffere es. Die Auflösung gibt es
+auf
+\url{http://math.andrej.com/2007/09/28/seemingly-impossible-functional-programs/},
+aber versuch es zuerst ohne zu spicken (Achtung, schwer!).
+
+\begin{haskellcode}
+-- `epsilon f` ist eine Bitfolge, auf der `f` True ist, falls eine solche
+-- existiert. Andernfalls ist `epsilon f` irgendeine Bitfolge.
+epsilon :: ([Bool] -> Bool) -> [Bool]
+epsilon f = if f xs then xs else ys
+    where
+    xs = False : epsilon (f . (False:))
+    ys = True  : epsilon (f . (True:))
+
+-- Falls `f` auf jeder Bitfolge False ist, ist `exists f` gleich `Nothing`.
+-- Ansonsten ist `exists f` gleich `Just xs`, wobei `xs` eine Bitfolge ist,
+-- auf der `f` True ist.
+exists :: ([Bool] -> Bool) -> Maybe [Bool]
+exists f = if f x then Just x else Nothing
+    where x = epsilon f
+\end{haskellcode}
+
+In Aktion sieht das Programm zum Beispiel so aus:
+\begin{haskellcode*}{escapeinside=||}
+|\ghci| exists $ \xs -> False
+Nothing
+|\ghci| exists $ \xs -> True
+Just [False,False,False,False,...]
+|\ghci| exists $ \xs -> xs !! 1 && xs !! 2
+Just [False,True,True,False,...]
+\end{haskellcode*}
+\end{aufgabe}
+
 \end{document}
