@@ -34,7 +34,7 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 \end{aufgabe}
 
 \begin{aufgabe}{Typfehler}
-  Erkläre den Typfehler, der bei folgendem Ausdruck entsteht: \haskellinline{\x -> x x}
+  Erkläre den Typfehler, der bei folgendem Ausdruck auftritt: \haskellinline{\x -> x x}
 
   {\scriptsize\emph{Bemerkung.} Es gibt einen tieferen und guten Grund dafür, wieso man die dabei auftretenden "`unendlichen Typen"' ablehnt. \url{http://copilotco.com/mail-archives/haskell-cafe.2006/msg05831.html}\par}
 \end{aufgabe}
@@ -296,6 +296,9 @@ Data.Monoid} die Definition der Monoid-Klasse zu laden.
 \begin{haskellcode}
 cata :: (Monoid m) => (a -> m) -> ([a] -> m)
 \end{haskellcode}
+{\scriptsize\emph{Bemerkung.} Das ist der Herzstück des Beweises, dass der Monoid
+der endlichen Listen mit Einträgen aus~\haskellinline{a} der \emph{freie
+Monoid} über~\haskellinline{a} ist.\par}
 \end{enumerate}
 \end{aufgabe}
 
@@ -643,7 +646,9 @@ Die Identitätsfunktion~\haskellinline{\x -> x} wird dann
 durch~\haskellinline{Lam "x" (Var "x")} dargestellt. Die
 Funktion~\haskellinline{\f -> \x -> f x} durch~\haskellinline{Lam "f" $ Lam "x"
 $ App (Var "f") (Var "x")}.
-\item Mache dich mit dem Modul~\haskellinline{Data.Map} vertraut.
+\item Mache dich mit dem Modul~\haskellinline{Data.Map} vertraut. Es wird
+meistens \emph{qualifiziert} importiert: \haskellinline{import qualified
+Data.Map as M}
 \item Implementiere einen Evaluator für das ungetypte Lambda-Kalkül, also eine
 Funktion \haskellinline{eval :: Env -> Exp -> Exp}. Dabei
 ist~\haskellinline{Env} ein weiteres Typsynonym, das den Typ der
