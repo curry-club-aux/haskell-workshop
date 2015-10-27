@@ -13,11 +13,12 @@ Benutze die vordefinierten Funktionen \haskellinline{fst :: (a, b) -> a} und \ha
 \end{aufgabe}
 
 \begin{aufgabe}{Medianbestimmung}
-Sei \haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das mittlere Element in einer Sortierung der Liste) von \haskellinline{xs} berechnet. Verwende dazu die Funktion \haskellinline{Data.List.sort}, \haskellinline{length}, \haskellinline{div} und \haskellinline{!!}.
+Sei~\haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das Element in der Mitte in einer Sortierung) von~\haskellinline{xs} berechnet. Verwende dazu die Funktionen \haskellinline{Data.List.sort}, \haskellinline{length}, \haskellinline{div} und~\haskellinline{!!}.
 \end{aufgabe}
 
 \begin{aufgabe}{Der Eulen-Operator erster Ordnung}
-Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit Hilfe von GHCi!
+Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit Hilfe von GHCi! \\
+{\scriptsize \emph{Hinweis.} Du brauchst nicht verstehen, warum der Eulen-Operator funktioniert. Nur, was er tut. \par}
 \end{aufgabe}
 
 
@@ -90,7 +91,7 @@ fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
   \begin{enumerate}
     \setcounter{enumi}{2}
     \item Schreibe die Funktion \haskellinline{collTest :: Int -> Bool}, welche die Collatz-Vermutung für eine Eingabe $n$ testet. Falls die Collatz-Vermutung für $n$ falsch sein sollte, so muss die Funktion nicht terminieren.
-    \item Überprüfe die Collatz-Vermutung für alle natürlichen Zahlen kleiner als eine Million.
+    \item Überprüfe die Collatz-Vermutung für alle natürlichen Zahlen kleiner als 100000.
   \end{enumerate}
 \end{aufgabe}
 
