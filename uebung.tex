@@ -777,4 +777,37 @@ Just [False,True,True,False,...]
 \end{haskellcode*}
 \end{aufgabe}
 
+\begin{aufgabe}{Ein eigenes assoziatives Datenfeld}
+Ein assoziatives Datenfeld oder schlicht `Map` könntest du schon kennen. Es erlaubt innerhalb einer Datenstruktur Beziehungen zwischen einem Wert vom Typ \verb|k| (dem Key) und einem anderem Wert vom Typ \verb|v| (dem Value) zu speichern.
+
+Definiere dir deinen eigenes \haskellinline{Map k v} als Binären Suchbaum. Jede \haskellinline{Fork} enthält einen \emph{Key} (Typ \verb|k|) und ein \emph{Value} (Typ \verb|v|). Im linken Kindbaum befinden sich alle Key-Value-Paare, für die gilt $key < aktuellerKey$. Im rechten Kindbaum gilt umgekehrt: $key > aktuellerKey$. Auf Basis dieser Eigenschaften kannst du die folgende Programmierschnittstelle für das \haskellinline{Map} implementieren.
+
+
+\begin{haskellcode}
+-- Unser Map-Typ als Binärer Baum.
+data Map k v = Fork k v (Map k v) (Map k v)
+             | Nil deriving (Show)
+
+-- Ein konstantes Map ohne Inhalte
+empty :: Map k v
+empty = Nil
+
+-- Fügt eine Beziehung zu einem Map hinzu
+insert :: Ord k => k -> v -> Map k v -> Map k v
+
+-- Entfernt eine Beziehung aus dem Map
+delete :: Ord k => k -> Map k v -> Map k v
+
+-- Schaut ein Element auf Basis eines Schlüssels nach
+lookup :: Ord k => k -> Map k v -> Maybe v
+
+-- Nimmt eine Liste von Tupeln und erstellt ein Map mit diesen als Relationen
+fromList :: Ord k => [(k, v)] -> Map k v
+\end{haskellcode}
+
+Implementiere nun diese Schnittstelle! Dann überlege dir, wie man \haskellinline{Map}s am Besten vergleicht. Danach implementiere \haskellinline{instance Eq (Map k v)}.  Du musst \haskellinline{import Prelude hiding (lookup)} am Anfang deiner Datei hinzufügen, damit du keine Namenskonflikte bekommst.
+
+Bonusbinärpunkt: Mache dich schlau, wie man eigene Operatoren in Haskell definiert. Dann definiere den Operator \haskellinline{!} als alias für \haskellinline{lookup}.
+\end{aufgabe}
+
 \end{document}
