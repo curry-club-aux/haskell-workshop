@@ -149,6 +149,19 @@ filterMap f g xs = filter f (map g xs)
   {\scriptsize \emph{Tipp.} Definiere eine Hilfsfunktion \haskellinline[fontsize=\scriptsize]{moveTower :: Int -> (Int, Int, Int) -> [(Int, Int)]}, sodass \haskellinline[fontsize=\scriptsize]{moveTower n (x, y, z)} die nötigen Schritte ausgibt, um $n$ Scheiben von $x$ nach $y$ unter Verwendung von $z$ als Zwischenlager zu bewegen.\par}
 \end{aufgabe}
 
+\begin{aufgabe}{Mirpzahlen}
+Eine \emph{Mirpzahl} ist eine Zahl, die sowohl von vorne nach hinten als auch
+hinten nach vorne gelesen eine Primzahl ist. Zum Beispiel sind~13 und~17
+Mirpzahlen. Die Primzahl~19 ist dagegen keine Mirpzahl.
+
+Schreibe ein Programm, das die Liste aller Mirpzahlen berechnet.
+
+{\scriptsize\emph{Hinweis.} Definiere eine Hilfsfunktion~\haskellinline{isPrime
+:: Integer -> Bool} und verwende die Funktionen~\haskellinline{show :: Integer
+-> [Char]}, \haskellinline{reverse :: [Char] -> [Char]} und~\haskellinline{read
+:: [Char] -> Integer}.\par}
+\end{aufgabe}
+
 \begin{aufgabe}{Strikte und nicht-strikte Funktionen}
 Eine Haskell-Funktion~\haskellinline{f :: A -> B} heißt genau dann
 \emph{strikt}, wenn sie, angewendet auf einen nicht-terminierenden Ausdruck,
@@ -549,6 +562,32 @@ Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis diese
 \item Schreibe eine Funktion \haskellinline{forM :: (Monad m) => [a] -> (a -> m b) -> m [b]} die das tut, was ihr Name und ihre Typsignatur versprechen.
 \item Schreibe eine Funktion, die es erlaubt, eine IO-Aktion (oder eine andere Art Aktion) unendlich oft zu wiederholen. Die Typsignatur sollte \haskellinline{forever :: (Monad m) => m a -> m b} sein. Erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!
 \end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Entzuckerung der do-Notation}
+Schreibe die folgenden Funktionen ohne Verwendung der do-Notation.
+
+\begin{haskellcode}
+iterateM :: (Monad m) => (a -> m a) -> a -> m b
+iterateM f x = do
+    x' <- f x
+    iterateM f x'
+
+join :: (Monad m) => m (m a) -> m a
+join m = do
+    m' <- m
+    m'
+
+whileM :: (Monad m) => m Bool -> m a -> m [a]
+whileM cond m = do
+    b <- cond
+    if b
+        then do
+            x  <- m
+            xs <- whileM cond m
+            return (x:xs)
+        else return []
+\end{haskellcode}
 \end{aufgabe}
 
 \begin{aufgabe}{Zahlenratespiel}
