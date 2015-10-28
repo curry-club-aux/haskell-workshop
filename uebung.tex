@@ -817,7 +817,7 @@ Just [False,True,True,False,...]
 \end{aufgabe}
 
 \begin{aufgabe}{Ein eigenes assoziatives Datenfeld}
-Ein assoziatives Datenfeld oder schlicht "`Map"` könntest du schon kennen. Es erlaubt innerhalb einer Datenstruktur Beziehungen zwischen einem Wert vom Typ \verb|k| (dem Key) und einem anderem Wert vom Typ \verb|v| (dem Value) zu speichern.
+Ein assoziatives Datenfeld oder schlicht "`Map"' könntest du schon kennen. Es erlaubt innerhalb einer Datenstruktur Beziehungen zwischen einem Wert vom Typ \verb|k| (dem Key) und einem anderem Wert vom Typ \verb|v| (dem Value) zu speichern.
 
 Definiere dir deinen eigenen Datentyp \haskellinline{Map k v} als binären Suchbaum. Jeder \haskellinline{Fork} enthält einen \emph{Key} (Typ \verb|k|) und ein \emph{Value} (Typ \verb|v|). Im linken Kindbaum befinden sich alle Key-Value-Paare, für die gilt $\textsf{key} < \textsf{aktuellerKey}$. Im rechten Kindbaum gilt umgekehrt: $\textsf{key} > \textsf{aktuellerKey}$. Auf Basis dieser Eigenschaften kannst du die folgende Programmierschnittstelle für \haskellinline{Map} implementieren.
 
