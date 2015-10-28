@@ -826,7 +826,7 @@ Definiere dir deinen eigenen Datentyp \haskellinline{Map k v} als binären Suchb
 data Map k v = Fork k v (Map k v) (Map k v)
              | Nil deriving (Show)
 
--- Eine konstantes Map ohne Inhalte
+-- Eine konstante Map ohne Inhalte
 empty :: Map k v
 empty = Nil
 
