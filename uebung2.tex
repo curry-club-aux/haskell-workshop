@@ -5,6 +5,41 @@
 
 \maketitle{2}{Learn You a Haskell for Great Good!}
 
+\section{Statistisch aussagekräftige Benchmarks}
+
+Die Haskell-Community liebt die Bibliothek \emph{Criterion}, um die Laufzeit
+von Haskell-Programmen zu messen. Diese macht viel mehr, als nur gegebenen Code
+mehrmals auszuführen und dann die durchschnittliche Laufzeit zu berechnen. Sie
+bestimmt auch die Standardabweichung der Laufzeit und gibt ein statistisches
+Maß für die Verlässlichkeit der geschätzten Werte aus.
+
+Ihre Benutzung ist kinderleicht:
+
+\begin{enumerate}
+\item[1.] \texttt{stack install criterion}
+\item[2.] Folgende Vorlage anpassen:
+
+\begin{haskellcode}
+import Criterion.Main
+
+fib :: Integer -> Integer
+fib = ...
+
+main = defaultMain
+    [ bgroup "fib"
+        [ bench "10" $ whnf fib 10
+        , bench "20" $ whnf fib 20
+        , bench "30" $ whnf fib 30
+        ]
+    ]
+\end{haskellcode}
+
+\item[3.] Das Programm ausführen. Wenn man dabei die Option \texttt{--output
+foo.html} übergibt, erstellt die Criterion-Bibliothek eine interaktive
+HTML-Seite, der man unter anderem die Verteilung der Messwerte entnehmen kann.
+\end{enumerate}
+
+
 \section{Erste Schritte mit Nebenläufigkeit}
 
 Da es in Haskell keinen veränderlichen Zustand gibt, können Haskell-Ausdrücke
@@ -43,7 +78,8 @@ Codes. DPH ist ein Forschungsprojekt, dass noch nicht seinen Weg in die
 aktuelle GHC-Version gefunden hat. XXX: Stimmt das?
 \end{itemize}
 
-\subsection{Erste Schritte mit Threads}
+
+\subsection{Threads}
 
 Mit \haskellinline{forkIO :: IO a -> IO ThreadId} aus dem Modul
 \haskellinline{Control.Concurrent} erzeugt man einen \emph{leichtgewichtigen
