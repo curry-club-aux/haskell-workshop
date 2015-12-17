@@ -1,0 +1,246 @@
+% Kompilieren mit: pdflatex -shell-escape uebung
+\documentclass{uebblatt}
+
+\begin{document}
+
+\maketitle{2}{Learn You a Haskell for Great Good!}
+
+\section{Erste Schritte mit Nebenläufigkeit}
+
+Da es in Haskell keinen veränderlichen Zustand gibt, können Haskell-Ausdrücke
+in erster Näherung in beliebiger Reihenfolge und auf beliebigen Prozessorkernen
+ausgewertet werden. GHC verteilt aber nicht von selbst Aufgaben auf mehrere
+Kerne.
+
+Es gibt in Haskell vier verschiedene Möglichkeiten, Nebenläufigkeit zu
+erreichen, die man je nach Anwendungszweck einsetzen kann.
+
+\begin{itemize}
+\item Parallelisierungsannotationen. Puren Code kann man einfach und ohne
+Umstrukturierung des Programms mit Auswertungsannotationen versehen, wie zum
+Beispiel "`führe das folgende \haskellinline{map} parallel aus"' oder "`falls
+Ressourcen vorhanden sind, beginne die Auswertung des folgenden Ausdrucks im
+Hintergrund"'.
+\item Threads. Wie in anderen Sprachen auch kann man explizit Threads
+erstellen. Threads können auf diverse Weisen miteinander kommunizieren, zum
+Beispiel mittels gemeinsamer veränderlicher Variablen (\haskellinline{MVar})
+und Channels (\haskellinline{Chan}). Dieser recht explizite Zugang zu
+Nebenläufigkeit ist also sehr ähnlich zum Zugang von anderen Sprachen wie
+Python oder JavaScript mit Node.js. Anders als in diesen Sprachen gibt es aber
+keine "`Callback-Hölle"'.
+\item Shared Transactional Memory (STM). Parallelisierungsannotationen helfen
+nicht bei Code, der Nebenwirkungen verursachen muss. Wenn man aber auf Threads
+zurückgreifen würde, müsste man wie in anderen Sprachen auch auf korrektes
+Locking und Race Conditions achten; das ist mühsam und fehleranfällig. STM ist
+eine Technik, mit der man vorgeben kann, dass speziell gekennzeichneter Code so
+abläuft, als wäre das Programm rein sequenziell geschrieben. Der große Vorteil
+an STM ist \emph{Kompositionalität}: Man kann Code rein lokal verstehen und
+kombinieren, ohne auf Auswirkungen von parallel ablaufenden Programmteilen
+achten zu müssen.
+\item Data Parallel Haskell (DPH). Dabei kümmern sich der Compiler und die
+Laufzeitumgebung selbstständig um eine effiziente Verteilung des auszuwertenden
+Codes. DPH ist ein Forschungsprojekt, dass noch nicht seinen Weg in die
+aktuelle GHC-Version gefunden hat. XXX: Stimmt das?
+\end{itemize}
+
+\subsection{Erste Schritte mit Threads}
+
+Mit \haskellinline{forkIO :: IO a -> IO ThreadId} aus dem Modul
+\haskellinline{Control.Concurrent} erzeugt man einen \emph{leichtgewichtigen
+Thread}. Die übergebene IO-Aktion wird in diesem Thread ausgeführt;
+Rückgabewert ist ein Wert vom Typ \haskellinline{ThreadId}, mit dem man den
+Thread noch nachträglich kontrollieren (etwa vorzeitig beenden) kann.
+
+Die Laufzeitumgebung kommt mit sehr vielen -- Millionen -- von
+leichtgewichtigen Threads klar. Sie werden automatisch auf eine kleine Anzahl
+echter Threads auf Betriebssystem-Level verteilt.
+
+In speziellen Anwendungsfällen ist es nötig, Betriebssystem-Threads statt
+leichtgewichtiger Threads zu erzeugen. Das ist mittels der Funktion
+\haskellinline{forkOS :: IO a -> IO ThreadId} ebenfalls möglich.
+
+\begin{aufgabe}{Hallo Welt aus zwei Threads}
+Schreibe ein Haskell-Programm, das einen leichtgewichtigen Thread erzeugt
+und den ausführenden Lambroiden sowohl vom Hauptthread als auch dem erzeugten
+Thread mit \haskellinline{putStrLn} grüßt.
+\end{aufgabe}
+
+\begin{aufgabe}{Vermischte Ausgabe}
+Schreibe ein Haskell-Programm, das zwei leichtgewichtige Threads erzeugt. Der
+eine Thread soll tausendmal das Zeichen \haskellinline{'a'} ausgeben, der
+andere das Zeichen \haskellinline{'b'}. Was passiert?
+\end{aufgabe}
+
+\begin{aufgabe}{Sleep Sort}
+Implementiere \emph{Sleep Sort}: Erzeuge für jedes
+Element~\haskellinline{x} einer gegebenen Liste von (kleinen) natürlichen
+Zahlen einen Thread, der sich gleich nach seiner Erstellung für eine
+zu~\haskellinline{x} proportionale Zeit schlafen legt und
+anschließend~\haskellinline{x} auf dem Terminal ausgibt.
+
+{\scriptsize\emph{Tipp.} Verwende die Funktion \haskellinline{threadDelay ::
+Int -> IO ()}, die den momentan laufenden Thread für eine gegebene Anzahl
+Mikrosekunden schlafen legt.\par}
+\end{aufgabe}
+
+Eine primitive Möglichkeit der Kommunikation zwischen Threads sind
+(thread-sichere) veränderliche Variablen. Eine solche kann zu jedem Zeitpunkt
+leer sein oder einen Wert enthalten. Man erstellt sie mit
+\haskellinline{newEmptyMVar :: IO (MVar a)} oder, wenn man die Variable gleich
+initialiseren möchte, mit \haskellinline{newMVar :: a -> IO (MVar a)}.
+
+Mit \haskellinline{readMVar :: MVar a -> IO a} holt man den aktuellen Wert
+einer übergebenen Variable. Sollte die Variable leer sein, blockiert dieser
+Aufruf so lange, bis die Variable durch einen anderen Thread gefüllt wird.
+
+Eine Variante ist die Funktion \haskellinline{takeMVar :: MVar a -> IO a}, die
+nach Auslesen der Variable diese leert.
+
+Mit \haskellinline{putMVar :: MVar a -> a -> IO ()} setzt man den Inhalt einer
+Variable. Wenn diese zum Zeitpunkt des Aufrufs nicht leer sein sollte, wird der
+vorhandene Inhalt nicht überschrieben. Stattdessen wird der ausführende Thread
+so schlafen gelegt, bis ein anderer Thread die Variable mit
+\haskellinline{takeMVar} leert. (Es gibt auch \haskellinline{tryPutMVar :: MVar
+-> a -> IO Bool}, das den Thread nicht schlafen geht und den Erfolg durch den
+Rückgabewert anzeigt.)
+
+\begin{aufgabe}{Lesen aus einer dauerhaft leeren Variable}
+Was macht folgender Code? Wie reagiert das Laufzeitsystem von GHC?
+
+\begin{haskellcode}
+import Control.Concurrent
+
+main = do
+    ref <- newEmptyMVar
+    takeMVar ref
+\end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Ein einfaches Beispiel zu Variablen}
+Schreibe ein Programm, das zwei leichtgewichtigen Threads erzeugt, die je eine große
+Fibonacci-Zahl berechnen und das Ergebnis in je einer Variable speichern. Der
+Hauptthread soll dann die beiden Ergebnisse ausgeben.
+\end{aufgabe}
+
+\begin{aufgabe}{Vorsicht vor Deadlocks}
+Was macht folgender Code? Wie reagiert das Laufzeitsystem von GHC?
+
+\begin{haskellcode}
+import Control.Concurrent
+
+main = do
+    ref1 <- newEmptyMVar
+    ref2 <- newEmptyMVar
+    forkIO $ takeMVar ref2 >> putMVar ref1 "Hallo Welt"
+    putStrLn =<< takeMVar ref1
+\end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Warten auf Kinder}
+Oft möchte man im Hauptthread die Beendigung gestarteter Threads abwarten. Das
+ist zum Beispiel mit folgendem Code möglich, den es natürlich auch schon in der
+Bibliothek XXX gibt. Vollziehe ihn nach!
+
+\begin{haskellcode}
+import Control.Monad
+import Control.Concurrent
+
+forkThread :: IO () -> IO (MVar ())
+forkThread proc = do
+    ref <- newEmptyMVar
+    forkFinally proc $ \_ -> putMVar ref ()
+    return ref
+
+main = do
+    jobs <- mapM forkThread [...]
+    mapM_ takeMVar jobs
+\end{haskellcode}
+\end{aufgabe}
+
+Neben veränderlichen Variablen gibt es noch \emph{Kanäle} zur Kommunikation
+zwischen Threads. Kanäle können anders als Variablen mehr als einen Wert
+zwischenspeichern. Man erzeugt einen Kanal mit \haskellinline{newChan :: IO
+(Chan a)}, pusht einen Wert durch \haskellinline{writeChan :: Chan a -> a ->
+IO ()} und poppt den vordersten Wert mit \haskellinline{readChan :: Chan a ->
+IO a}. Der Aufruf von \haskellinline{readChan} blockiert, falls der Kanal leer
+ist.
+
+\begin{aufgabe}{Sleep Sort kanalbasiert}
+Modifiziere deinen Sleep-Sort-Algorithmus derart, dass die sortierten Werte
+nicht auf dem Terminal ausgegeben, sondern in einen Kanal geschrieben werden.
+Dieser soll dann in einem Rutsch ausgegeben werden. 
+\end{aufgabe}
+
+Zum Ende dieses Abschnitts sei bemerkt, dass man selten auf der Ebene dieser
+Aufgaben programmieren muss. Für viele Einsatzgebiete gibt es schon fertige
+Kombinatoren-Bibliotheken zum nebenläufigen Programmieren.
+
+XXX: \texttt{+RTS -N -RTS} erwähnen.
+
+
+\subsection{Shared Transactional Memory (STM)}
+
+In dem folgenden Programm kommt es zu einer Race Condition. Wiederholte Aufrufe
+des Programms werden verschiedene Ergebnisse liefern.
+
+\begin{haskellcode}
+import Control.Concurrent
+import Control.Monad
+
+forkThread :: IO () -> IO (MVar ())
+forkThread = {- siehe oben -}
+
+go :: IORef Integer -> IORef Integer -> IO ()
+go xRef yRef = do
+    x <- readIORef xRef
+    y <- readIORef yRef
+    let x' = y  + 1
+        y' = x' + 1
+    writeIORef xRef x'
+    writeIORef yRef y'
+
+main = do
+    xRef <- newIORef 1
+    yRef <- newIORef 2
+    jobs <- replicateM 40000 $ forkThread $ go xRef yRef
+    mapM_ takeMVar jobs
+    x <- readIORef xRef
+    y <- readIORef yRef
+    print (x, y)
+\end{haskellcode}
+
+Mit STM passiert das nicht. Statt \haskellinline{IORef}'s verwendet man dann
+\haskellinline{TVar}'s. Die Operationen übertragen sich wörtlich, spielen sich
+dann aber in der \haskellinline{STM}- statt der \haskellinline{IO}-Monade ab:
+\haskellinline{newTVar :: a -> STM (TVar a)} und so weiter.
+
+Der angepasste Code sieht so aus:
+
+\begin{haskellcode}
+import Control.Concurrent
+import Control.Concurrent.STM
+import Control.Monad
+
+forkThread :: IO () -> IO (MVar ())
+forkThread = {- siehe oben -}
+
+go :: TVar Integer -> TVar Integer -> STM ()
+go xRef yRef = do
+    x <- readTVar xRef
+    y <- readTVar yRef
+    let x' = y  + 2
+        y' = x' + 2
+    writeTVar xRef x'
+    writeTVar yRef y'
+
+main = do
+    xRef <- newTVarIO 1
+    yRef <- newTVarIO 2
+    jobs <- replicateM 40000 $ forkThread $ atomically $ go xRef yRef
+    mapM_ takeMVar jobs
+    x <- readTVarIO xRef
+    y <- readTVarIO yRef
+    print (x, y)
+\end{haskellcode}
+
+\end{document}
