@@ -168,6 +168,15 @@ instance Monad Maybe where
 \end{haskellcode}
 \end{aufgabe}
 
+\begin{aufgabe}{Ein Brainteaser zur Reader-Monade}
+Was macht folgende Funktion~\haskellinline{f}? Und wieso?
+
+\begin{haskellcode}
+f :: [a] -> a
+f = head `fmap` reverse
+\end{haskellcode}
+\end{aufgabe}
+
 \begin{aufgabe}{Ein erster Monadenturm}
 Wir haben gesehen, dass man mit der State-Monade veränderlichen Zustand
 durchfädeln kann. Mit der Funktion
@@ -198,6 +207,38 @@ Funktion~\haskellinline{lift :: Maybe r -> StateT (Stack a) Maybe r} kannst du
 Werte aus der Basismonade, in unserem Fall also~\haskellinline{Maybe}, in die
 transformierte Monade heben. Nützlich wird vor allem \haskellinline{lift
 Nothing :: StateT (Stack a) Maybe r} sein.\par}
+\end{aufgabe}
+
+\begin{aufgabe}{Eine Monade für Wahrscheinlichkeiten}
+Wenn du dich für Statistik oder Wahrscheinlichkeitstheorie interessiert, dann
+schau dir
+\url{http://www.randomhacks.net/2007/02/22/bayes-rule-and-drug-tests/} und
+\url{http://www.randomhacks.net/2007/02/21/refactoring-probability-distributions/}
+an.
+
+Damit kann man Code wie den folgenden schreiben:
+
+\begin{haskellcode}
+die :: Dist Int
+die = uniform [1..6]
+
+twoDice :: Dist (Int,Int)
+twoDice = do
+    x <- die
+    y <- die
+    return (x,y)
+-- kürzer: twoDice = liftM2 (,) die die
+-- oder:   twoDice = (,) <$> die <*> die
+-- (Mit der in Arbeit befindlichen Erweiterung "Idiom Brackets"
+-- wird die Notation noch verschönert werden!)
+
+sumOfTwoDice :: Dist Int
+sumOfTwoDice = do
+    x <- die
+    y <- die
+    return $ x + y
+-- oder: sumOfTwoDice = (+) <$> die <$> die
+\end{haskellcode}
 \end{aufgabe}
 
 \begin{aufgabe}{Für Unerschrockene: Die Continuation-Monade}
