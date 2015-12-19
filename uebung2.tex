@@ -5,6 +5,149 @@
 
 \maketitle{Zweiter Haskell-Workshop}{Learn You a Haskell for Great Good!}
 
+
+\section{Mehr zu Monaden}
+
+\begin{aufgabe}{Umgekehrte polnische Notation}
+In der umgekehrten polnischen Notation schreibt man einen mathematischen
+Ausdruck wie
+\[ (1 + 2) \cdot 3 - 4 \cdot 5 \]
+so:
+\[ \texttt{1 2 + 3 * 4 5 * -} \]
+Der Vorteil an dieser Notation ist, dass man keine Klammern und keine Regeln
+für die Präzedenz von Operatoren ("`Punkt vor Strich"') benötigt. Die
+Auswertung eines Ausdrucks in umgekehrter polnischer Notation erfolgt mit
+einem Stack. Konstanten pushen jeweils ihren Wert auf den Stack.
+Rechenoperationen poppen die obersten zwei Werte des Stacks und pushen das
+Ergebnis.
+
+Wir formulieren das in Haskell wie folgt:
+
+\begin{haskellcode}
+data Instr a
+    = Lit a
+    | Add
+    | Sub
+    | Mult
+    | Div
+    deriving (Show,Eq)
+
+type Stack a = [a]
+
+ex :: [Instr Double]
+ex = [Lit 1, Lit 2, Add, Lit 3, Mult, Lit 4, Lit 5, Mult, Sub]
+\end{haskellcode}
+
+\begin{enumerate}
+\item Schreibe eine Funktion~\haskellinline{exec :: Instr a -> Stack a -> Stack
+a}, die eine Instruktion als Argument nimmt und diese ausführt: also einen
+gegegeben Stack in einen neuen transformiert. Im Fehlerfall (Division durch
+Null, zu wenige Argumente auf dem Stack) soll die Funktion einfach
+mit~\haskellinline{error} terminieren.
+\item Schreibe die Funktion nun unter Verwendung der State-Monade um. Der neue
+Typ soll also~\haskellinline{exec' :: (Num a) => Instr a -> State (Stack a) ()}
+sein. Denk daran, das Modul \haskellinline{Control.Monad.State} zu importieren.
+Schreibe und verwende Hilfsfunktionen~\haskellinline{push :: a -> State (Stack
+a) ()} und~\haskellinline{pop :: State (Stack a) a}. Ein Fall in der Definition
+von~\haskellinline{exec'} soll so aussehen:
+
+\begin{haskellcode}
+exec' Add = do
+    x <- pop
+    y <- pop
+    push (x + y)
+\end{haskellcode}
+\item Kombiniere die Funktion~\haskellinline{mapM_ :: (Monad m) => (a -> m b) ->
+[a] -> m [b]} mit deiner Funktion~\haskellinline{exec'} und der
+Funktion~\haskellinline{execState} aus \haskellinline{Control.Monad.State}, um
+einen Interpreter für Ausdrücke in umgekehrter polnischer Notation zu erhalten:
+eine Funktion vom Typ \haskellinline{(Num a) => [Instr a] -> a}. (Zurückgegeben
+werden soll das oberste Element des Stacks.)
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Vermeidung von unübersichtlichen Fehlerbehandlungen I}
+\begin{enumerate}
+\item Implementiere zum Aufwärmen folgende drei Funktionen.
+
+\begin{haskellcode}
+safeHead :: [a] -> Maybe a
+safeLast :: [a] -> Maybe a
+safeTail :: [a] -> Maybe [a]
+\end{haskellcode}
+
+\item Folgender Code verwendet diese Funktionen, um das erste Element einer
+gegebenen Liste mit dem vorletzten zu multiplizieren. Bewundere, wie unübersichtlich
+der Code durch die verschachtelte Fehlerbehandlung ist.
+
+\begin{haskellcode}
+ex :: (Num a) => [a] -> Maybe a
+ex xs = case safeHead xs of
+    Nothing -> Nothing
+    Just x  -> case safeTail xs of
+        Nothing  -> Nothing
+        Just xs' -> case safeLast xs' of
+            Nothing -> Nothing
+            Just y  -> Just (x * y)
+\end{haskellcode}
+
+\item Schreibe den Code nun mit Hilfe der do-Notation in der Maybe-Monade um!
+Er soll dann keine Fallunterscheidungen mehr enthalten und etwa so aussehen:
+
+\begin{haskellcode}
+ex :: (Num a) => [a] -> Maybe a
+ex xs = do
+    ...   -- hier irgendwas mit safeHead
+    ...   -- hier irgendwas mit safeTail
+    ...   -- hier irgendwas mit safeLast
+    ...   -- hier irgendwas mit x * y
+\end{haskellcode}
+
+\item Schreibe eine generische Funktion \haskellinline{iterateM :: (Monad m) =>
+Int -> (a -> m a) -> a -> m a}.
+
+\item Kombiniere~\haskellinline{safeHead}, \haskellinline{safeTail}
+und \haskellinline{iterateM} zu einer Funktion \haskellinline{safeNth :: [a] ->
+Int -> Maybe a}.
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Vermeidung von unübersichtlichen Fehlerbehandlungen II}
+Unsere übersichtliche Lösung aus der vorherigen Aufgabe hat ein Manko: Im
+Fehlerfall gibt sie keine Fehlermeldungen aus. Diesen Missstand können wir
+beheben, indem wir nicht die \haskellinline{Maybe}-, sondern die
+\haskellinline{Either String}-Monade einsetzen.
+
+\begin{enumerate}
+\item Ändere die Funktionen aus Teilaufgabe~a) der vorherigen Aufgabe so ab,
+dass sie im Fehlerfall mit \haskellinline{Left} eine Fehlermeldung zurückgeben.
+Ihre Typen sollen sein:
+
+\begin{haskellcode}
+safeHead :: [a] -> Either String a
+safeLast :: [a] -> Either String a
+safeTail :: [a] -> Either String [a]
+\end{haskellcode}
+
+\item Ändere analog die Funktion~\haskellinline{ex} aus der zweiten Teilaufgabe
+ab. Ihr neuer Typ soll~\haskellinline{(Num a) => [a] -> Either String a} sein.
+Spüre den dabei entstehenden Schmerz.
+
+\item Bewundere, wie sich die Lösung aus Teilaufgabe~c) der vorherigen Aufgabe
+mühelos auf die neue Situation überträgt. Nur die (ohnehin optionale)
+Typsignatur muss angepasst werden!
+\end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Logging mit der Writer-Monade}
+\end{aufgabe}
+
+\begin{aufgabe}{Für Unerschrockene: Die Continuation-Monade}
+\end{aufgabe}
+
+XXX: Listen-Monade!
+
+
 \section{Statistisch aussagekräftige Benchmarks}
 
 Die Haskell-Community liebt die Bibliothek \emph{Criterion}, um die Laufzeit
