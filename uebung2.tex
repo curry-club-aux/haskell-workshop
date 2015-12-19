@@ -79,6 +79,112 @@ aktuelle GHC-Version gefunden hat.
 \end{itemize}
 
 
+\subsection{Parallelisierungsannotationen}
+
+Aus dem ersten Workshop ist ja die Funktion \haskellinline{seq :: a -> b -> b}
+bekannt. Wird der Ausdruck \haskellinline{seq x y} ausgewertet, so wird
+zunächst~\haskellinline{x} ausgewertet, das Ergebnis verworfen, und
+dann~\haskellinline{y} zurückgegeben.
+
+Ein Aufruf wie \haskellinline{seq 42 y} ist nicht besonders sinnvoll. Wenn aber
+die Auswertung von~\haskellinline{x} die Auswertung von Teilen einer
+Datenstruktur anstößt, so bleiben die Ergebnisse gespeichert. Die folgende
+GHCi-Sitzung illustriert das:
+
+\begin{verbatim}
+> let x = fib 30  -- kehrt sofort zurück
+> seq x "Hallo"   -- dauert lange, da `x` ausgewertet wird
+"Hallo"
+> x               -- kehrt sofort zurück
+832040
+\end{verbatim}
+
+Nun gibt es neben \haskellinline{seq} auch die Funktion \haskellinline{par :: a
+-> b -> b} aus dem Modul \haskellinline{Control.Parallel} (aus dem Paket
+\texttt{parallel}). Semantisch ist~\haskellinline{par x y} identisch
+zu~\haskellinline{y}. Als Nebenwirkung wird aber ein \emph{Spark} erzeugt,
+der~\haskellinline{x} im Hintergrund parallel auswertet.
+
+In GHCi sieht das zum Beispiel so aus:
+
+\begin{verbatim}
+> let fib :: Int -> Int; fib n = if n <= 1 then n else fib (n-1) + fib (n-2)
+> let x = fib 30
+> let y = fib 30
+> (x,y)
+(832040,832040)   -- die beiden Komponenten werden nacheinander
+                  -- berechnet und ausgegeben
+
+> import Control.Parallel
+> let a = fib 30
+> let b = fib 30
+> b `par` (a,b)
+(832040,832040)   -- nach anfänglicher Verzögerung werden beide
+                  -- Komponenten in einem Rutsch ausgegeben
+\end{verbatim}
+
+\emph{Wichtig:} Standardmäßig verwendet die Laufzeitumgebung nur einen einzigen
+Betriebssystem-Thread. Damit können keine Sparks im Hintergrund ausgeführt
+werden. Man muss seinen Code mit der Option \texttt{-threaded} kompilieren und
+beim Ausführen dem Laufzeitsystem mitteilen, dass es mehrere
+Betriebssystem-Threads verwenden soll:
+
+\begin{verbatim}
+# Kompilieren mit:
+$ ghc --make -O2 -threaded Main
+
+# Ausführen mit:
+$ ./Main +RTS -N4 -RTS   # genau vier Betriebssystem-Threads verwenden
+$ ./Main +RTS -N -RTS    # sinnvolle Anzahl Betriebssystem-Threads verwenden
+
+# Interaktive Shell:
+$ ghci +RTS -N -RTS
+\end{verbatim}
+
+\begin{aufgabe}{Was bedeutet eigentlich Auswertung?}
+Erkläre, wieso in folgender GHCi-Sitzung scheinbar~\haskellinline{b}
+\emph{nicht} im Hintergrund ausgewertet wird. Denke daran, GHCi mit der Option
+\texttt{+RTS -N -RTS} zu starten.
+
+\begin{verbatim}
+> import Control.Parallel
+> let a = [fib 30]
+> let b = [fib 30]
+> b `par` (a,b)
+([832040],[832040])
+\end{verbatim}
+\end{aufgabe}
+
+\begin{aufgabe}{Paralleles Map}
+Schreibe eine Funktion \haskellinline{parMap :: (a -> b) -> [a] -> [b]}, die
+semantisch identisch zu~\haskellinline{map} ist, aber alle Werte parallel
+berechnet.
+
+Auf einem Mehrkern-Computer sollte also
+\begin{verbatim}
+> parMap fib [30,30,30,30]
+\end{verbatim}
+deutlich schneller ablaufen als~\haskellinline{map fib [30,30,30,30]}.
+\end{aufgabe}
+
+Zu Sparks ist noch viel mehr zu sagen. An dieser Stelle nur zwei Bemerkungen:
+Startet man sein Programm mit den Optionen \texttt{+RTS -N -s -RTS}, so werden
+nach Beendigung Statistiken ausgegeben. Diese beinhalten unter anderem, wie
+viele Sparks erzeugt wurden und wie viele \emph{fizzelten} -- das heißt, dass
+der zu berechnende Wert schon vom Hauptthread angefordert wurde, noch bevor der
+Spark loslegen konnte.
+
+Außerdem gibt es \emph{ThreadScope}, mit dem die Auslastung durch Threads und
+Sparks visualisiert werden kann.
+
+\begin{center}
+  \href{https://wiki.haskell.org/ThreadScope_Tour/Spark}{\includegraphics[width=0.8\textwidth]{Spark-lifecycle}}
+
+  Der Lebenszyklus eines Sparks.
+  Quelle: \url{https://wiki.haskell.org/ThreadScope_Tour/Spark}
+\end{center}
+
+
 \subsection{Threads}
 
 Mit \haskellinline{forkIO :: IO a -> IO ThreadId} aus dem Modul
@@ -95,24 +201,15 @@ In speziellen Anwendungsfällen ist es nötig, Betriebssystem-Threads statt
 leichtgewichtiger Threads zu erzeugen. Das ist mittels der Funktion
 \haskellinline{forkOS :: IO a -> IO ThreadId} ebenfalls möglich.
 
-\emph{Wichtig:} Standardmäßig verwendet die Laufzeitumgebung nur einen einzigen
-Betriebssystem-Thread. Wenn man Threads nur verwenden möchte, um auf das
-Eintreffen von IO-Events zu warten (etwa neue Benutzereingaben vom Terminal
-oder aus dem Netzwerk), dann kann schon genügen. Wenn man aber mit Threads
+\emph{Wichtig:} Wenn man Threads nur verwenden möchte, um mit simultan
+stattfindenden IO-Aktionen umzugehen (etwa Anforderungen mehrerer gleichzeitig
+verbundener Clients über das Netzwerk entgegennehmen), genügt prinzipiell ein
+einzelner Betriebssystem-Thread. Wenn man aber mit Threads
 tatsächlich auch mehrere Berechnungen parallel ausführen möchte, muss man
-seinen Code mit der Option \texttt{-threaded} kompilieren und beim Ausführen
-dem Laufzeitsystem mitteilen, dass es mehrere Betriebssystem-Threads verwenden
-soll:
-
-\begin{verbatim}
-# Kompilieren mit:
-$ ghc --make -O2 -threaded Main
-
-# Ausführen mit:
-$ ./Main +RTS -N4 -RTS   # genau vier Betriebssystem-Threads verwenden
-$ ./Main +RTS -N -RTS    # sinnvolle Anzahl Betriebssystem-Threads verwenden
-\end{verbatim}
-
+wie im vorherigen Abschnitt beschrieben seinen Code mit der Option
+\texttt{-threaded} kompilieren und beim Ausführen
+dem Laufzeitsystem mit \texttt{+RTS -N -RTS} mitteilen, mehrere
+Betriebssystem-Threads zu verwenden.
 
 \begin{aufgabe}{Hallo Welt aus zwei Threads}
 Schreibe ein Haskell-Programm, das einen leichtgewichtigen Thread erzeugt
