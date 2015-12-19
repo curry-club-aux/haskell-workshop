@@ -163,6 +163,21 @@ Schreibe ein Programm, das die Liste aller Mirpzahlen berechnet.
 :: [Char] -> Integer}.\par}
 \end{aufgabe}
 
+\begin{aufgabe}{Primzahlen mit dem Sieb des Eratosthenes}
+\begin{enumerate}
+\item Schreibe ein Haskell-Programm, dass die unendliche Liste aller Primzahlen
+berechnet. Verwende dazu zunächst deine Funktion~\haskellinline{isPrime ::
+Integer -> Bool} aus der vorherigen Aufgabe und die allgemeine
+Listenfunktion~\haskellinline{filter}.
+\item Stelle nun deinen Algorithmus auf das Sieb des Eratosthenes um. Dabei
+geht man wie folgt vor: Zunächst betrachtet man die
+Liste~\haskellinline{[2..]}. Das erste Element notiert man als Primzahl. Dann
+streicht man alle Vielfachen dieses Elements. Die erste jetzt noch stehende
+Zahl ist die nächste Primzahl. Dann streicht man deren Vielfache; und so
+weiter.
+\end{enumerate}
+\end{aufgabe}
+
 \begin{aufgabe}{Strikte und nicht-strikte Funktionen}
 Eine Haskell-Funktion~\haskellinline{f :: A -> B} heißt genau dann
 \emph{strikt}, wenn sie, angewendet auf einen nicht-terminierenden Ausdruck,
