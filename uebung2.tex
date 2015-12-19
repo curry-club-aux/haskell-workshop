@@ -1,10 +1,11 @@
 % Kompilieren mit: pdflatex -shell-escape uebung
 \documentclass{uebblatt}
 
+\newcommand{\refaufgabe}[1]{#1} % TODO: wir sollten irgendwie Übungsaufgaben (vom ersten Blatt) mit Namen referenzieren, nicht per Nummer. Also wie mit \ref in LaTeX.
+
 \begin{document}
 
 \maketitle{Zweiter Haskell-Workshop}{Learn You a Haskell for Great Good!}
-
 
 \section{Mehr zu Monaden}
 
@@ -204,6 +205,238 @@ Nothing :: StateT (Stack a) Maybe r} sein.\par}
 
 XXX: Listen-Monade!
 
+
+\section{QuickCheck}
+
+Eine der coolsten Haskell-Bibliothek überhaupt ist \emph{QuickCheck}. Mit
+QuickCheck ist es supereinfach, geschriebene Funktionen auf ihre Korrektheit zu
+testen. Während in anderen Programmiersprachen ein Test oft bloß aus einer
+handvoll selbst ausgewählter Beispieleingaben und den zugehörigen erwarteten
+Ausgaben besteht, kann mit mit QuickCheck erwartete \emph{Eigenschaften} von
+Funktionen formulieren und überprüfen lassen. Dadurch deckt man häufig Fehler in
+Sonderfällen auf, an die man sonst gar nicht gedacht hätte.
+
+Als Beispiel wollen wir ein paar Eigenschaften der Listenverkettung
+\haskellinline{(++) :: [a] -> [a] -> [a]} formulieren und checken:
+
+\begin{haskellcode}
+import Data.List (isPrefixOf, isSuffixOf)
+
+-- Die Länge der Verkettung zweier Listen ist die Summe der Längen.
+prop_concat_length :: [Int] -> [Int] -> Bool
+prop_concat_length as bs = length (as ++ bs) == length as + length bs
+
+-- Die Liste `as` ist ein Präfix von `as ++ bs`
+prop_concat_prefix :: [Int] -> [Int] -> Bool
+prop_concat_prefix as bs = as `isPrefixOf` as ++ bs
+-- bzw. take (length as) (as ++ bs) == as
+
+-- Die Liste `bs` ist ein Suffix von `as ++ bs`
+prop_concat_suffix :: [Int] -> [Int] -> Bool
+prop_concat_suffix as bs = bs `isSuffixOf` as ++ bs
+\end{haskellcode}
+
+Jede Eigenschaft ist eine Funktion, die ein paar Eingaben annimmt und dann
+zurückgibt, ob die Eigenschaft für diese Eingaben erfüllt ist. Wir können
+nun diese Eigenschaften mit der \haskellinline{quickCheck}-Funktion in GHCi
+überprüfen:
+
+\begin{minted}[escapeinside=||]{text}
+|\ghci| :m +Test.QuickCheck
+|\ghci| quickCheck prop_concat_length
++++ OK, passed 100 tests.
+|\ghci| quickCheck prop_concat_prefix
++++ OK, passed 100 tests.
+|\ghci| quickCheck prop_concat_suffix
++++ OK, passed 100 tests.
+\end{minted}
+
+QuickCheck hat gerade für jede der drei Eigenschaften 100 Zufallseingaben
+generiert und geprüft, dass die angegeben Funktionen auf ihnen
+\haskellinline{True} liefern.
+
+(Durch diese drei Eigenschaften ist \haskellinline{(++)} sogar schon eindeutig
+festgelegt. Wir haben also eine \emph{vollständige} Menge von Eigenschaften
+gefunden.)
+
+\begin{aufgabe}{Korrektheit von \haskellinline{fibs}}
+  Wir haben auf dem ersten Übungsblatt in Aufgabe \refaufgabe{8} die Liste
+  \haskellinline{fibs :: [Int]} von Fibonacci-Zahlen implementiert. Wir haben
+  außerdem die Funktion \haskellinline{fib :: Int -> Int} naiv über die
+  Rekursionsgleichung \haskellinline{fib (n+2) = fib (n+1) + fib n} definiert.
+
+  Benutze QuickCheck, um zu testen, dass beide Definitionen äquivalent sind,
+  d.\,h. dass für alle natürlichen Zahlen $n$ das $n$-te Listenelement von
+  \haskellinline{fibs} (also \haskellinline{fibs !! n}) gleich
+  \haskellinline{fib n} ist.
+  
+  \emph{Tipp.} Du musst als Vorbedingung fordern, dass $n \geq 0$ ist. Dazu
+  kannst du entweder die Vorbedingung deiner Eigenschaft voranstellen mit
+  \haskellinline{(n >= 0) ==> ...} (dabei ist \haskellinline{==>} eine Funktion
+  aus \textinline{Test.QuickCheck}). Das Problem daran ist, dass von den 100
+  zufällig generierten Eingaben etliche verworfen werden, weil sie die
+  Vorbedingung nicht erfüllen. Dadurch wird die Eigenschaft für weniger Werte
+  getestet. Besser ist es, gleich nur solche Zufallseingaben zu generieren, die
+  die Vorbedingung erfüllen. In QuickCheck gibt es dafür den Datentyp
+  \haskellinline{NonNegative Int}. Von QuickCheck generierte Zufallswerte von
+  diesem Typ haben die Form \haskellinline{NonNegative n}, wobei
+  \haskellinline{n :: Int} nichtnegativ (Überraschung!) ist. Du kannst dies
+  ausnutzen, wenn du deine Eigenschaft so umschreibst, dass sie den Typ
+  \haskellinline{fib_correct :: NonNegative Int -> Bool} hat.
+  
+  Außerdem solltest du dich auf Eingaben einer bestimmten Maximalgröße
+  beschränken. Ansonsten könnte die Sonne zu einem roten Riesen werden, bevor
+  QuickCheck mit dem Überprüfen fertig ist.
+\end{aufgabe}
+
+\emph{Bemerkung.} In der letzten Übungsaufgabe haben wir ein häufig verwendetes
+Muster bei der Verwendung von QuickCheck gesehen. Man implementiert eine
+Funktion zweimal, einmal so, dass die Implementierung offensichtlicherweise
+korrekt ist, und ein zweites Mal so, dass sich die Funktion schnell ausführen
+lässt. Dann verwendet man QuickCheck, um zu überprüfen, dass die beiden
+Implementierungen auf allen (getesteten) Eingaben übereinstimmen.
+
+\begin{aufgabe}{Korrektheit der Run-Length-Codierung}
+  Überprüfe, dass die in Aufgabe \refaufgabe{12} von Blatt 1 implementierten
+  Funktionen \haskellinline{encode} und \haskellinline{decode} tatsächlich
+  Inverse voneinander sind!
+
+  {\scriptsize \emph{Tipp.} Mit \haskellinline[fontsize=\scriptsize]{forAll
+  genRLE :: ([(Int, Char)] -> Bool) -> Property} kannst du eine Eigenschaft nur
+  für alle Werte vom Typ \haskellinline[fontsize=\scriptsize]{[(Int, Char)]}
+  testen, die Run-Length-Encodings repräsentieren (d.\,h. die zweite Komponente
+  jedes Tupels ist eine Zahl $\geq 1$). Dabei beschreibt
+  \haskellinline[fontsize=\scriptsize]{genRLE = listOf ((,) <$> (getPositive <$>
+  arbitrary) <*> arbitrary)} einen Zufallsgenerator von validen
+  Run-Length-Encodings.}
+\end{aufgabe}
+
+Wir wollen nun Aufgabe \refaufgabe{19} von Blatt 1 testen. Dort haben wir den
+Datentyp
+
+\begin{haskellcode}
+data Tree = Nil | Fork Int Tree Tree
+\end{haskellcode}
+
+definiert. Wir müssen zunächst QuickCheck beibringen, wie zufällige Werte vom Typ \haskellinline{Tree} generiert werden können. Dazu müssen wir folgende Typklasse instanziieren
+
+\begin{haskellcode}
+class Arbitrary a where
+  arbitrary :: Gen a
+\end{haskellcode}
+
+Dabei ist \haskellinline{Gen a} der Typ der zufälligen Generatoren von Werten
+vom Typ \haskellinline{a}. Folgende Instanzen sind vordefiniert:
+
+\begin{haskellcode}
+instance Arbitrary Bool where
+  arbitrary = elements [False, True]
+  -- `elements` wählt zufällig ein Element aus der Liste aus
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (a, b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    return (a, b)
+  -- alternativ: arbitrary = (,) <$> arbitrary <*> arbitrary
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Either a b) where
+  arbitrary = oneof [Left <$> arbitrary, Right <$> arbitrary]
+  -- `oneof` wählt zwischen zwei Möglichkeiten: entweder wir generieren ein
+  -- zufälliges Element `x :: a` und geben dann `Left x :: Either a b` zurück,
+  -- oder wir generieren `y :: b` und geben `Right y :: Either a b` zurück.
+\end{haskellcode}
+
+\begin{aufgabe}{QuickCheck mit binären Bäumen}
+  \begin{enumerate}
+    \item Verstehe folgende \haskellinline{Arbitrary}-Instanz:
+\begin{haskellcode}
+instance Arbitrary Tree where
+  arbitrary = oneof [genNil, genFork]
+    where
+      genNil = return Nil
+      genFork = do
+        m <- arbitrary
+        l <- arbitrary
+        r <- arbitrary
+        return (Fork m l r)
+\end{haskellcode}
+
+    \item Teste folgende Eigenschaft:
+    \haskellinline{numberOfLeaves l + numberOfLeaves r = numberOfLeaves (Fork m l r)}
+    für alle \haskellinline{l, r :: Tree} und \haskellinline{m :: Int}.
+    
+    \item Formuliere eine Eigenschaft, die die Höchsttiefe-Funktion aus Aufgabe \refaufgabe{19} b) von Blatt 1 besitzen sollte, und überprüfe sie mit QuickCheck.
+  \end{enumerate}
+\end{aufgabe}
+
+\begin{aufgabe}{Funktoraxiome}
+  
+  Zeige, dass deine Implementierung von \haskellinline{tmap :: (a -> b) -> Tree
+  a -> Tree b} aus Aufgabe \refaufgabe{20} die Funktoraxiome erfüllt, d.\,h.
+  
+  \begin{enumerate}
+    \item[1.] \haskellinline{tmap id = id}
+    \item[2.] \haskellinline{tmap g . tmap f = tmap (g . f)} für alle \haskellinline{f :: a -> b} und \haskellinline{g :: b -> c}
+  \end{enumerate}
+  
+  Wegen einer magischen Eigenschaft des Haskell-Typsystems musst du nur Axiom 1
+  mit QuickCheck nachprüfen. Axiom 2 ist dann vollautomatisch erfüllt.
+
+  {\scriptsize \emph{Hinweis.} Du musst zunächst die obige
+  \haskellinline[fontsize=\scriptsize]{Arbitrary}-Instanz von
+  \haskellinline[fontsize=\scriptsize]{Tree} wie folgt abändern:}
+
+\begin{haskellcode*}{fontsize=\scriptsize}
+instance Arbitrary a => Arbitrary (Tree a) where
+  arbitrary = ... -- Rest wie oben
+\end{haskellcode*}
+\end{aufgabe}
+
+\begin{aufgabe}{Korrektheit von \haskellinline{partition}}
+  Die Funktion \haskellinline{partition :: (a -> Bool) -> [a] -> ([a], [a])} aus
+  \textinline{Data.List} teilt eine Liste auf in diejenigen Elemente, die ein
+  gegebenes \emph{Prädikat} \haskellinline{p :: a -> Bool} erfüllen, und
+  diejenigen, die es nicht erfüllen. Überprüfe:
+  
+  \begin{enumerate}
+    \item Sei \haskellinline{(as, bs) = partition p xs}. Die Elemente in \haskellinline{as} erfüllen alle \haskellinline{p}, die Elemente in \haskellinline{bs} erfüllen \haskellinline{p} nicht.
+    \item Es geht kein Element durch \haskellinline{partition} "`verloren"'.
+  \end{enumerate}
+
+  {\scriptsize Es genügt, die Aussagen mit \haskellinline[fontsize=\scriptsize]{Int} für
+  \haskellinline[fontsize=\scriptsize]{a} und \haskellinline[fontsize=\scriptsize]{p m = m >= 0} zu überprüfen.}
+\end{aufgabe}
+
+\begin{aufgabe}{Algebraische Axiome}
+  Übersetze die Monoid-Axiome in Haskell-Code! Du findest die
+  \haskellinline{Monoid}-Typklasse in Aufgabe \refaufgabe{26} auf Blatt 1. Frag
+  nach, falls du nicht weißt, was ein Monoid ist!
+  
+\begin{haskellcode}
+prop_assoc :: (Monoid m, Eq m) => m -> m -> m -> Bool
+prop_assoc = ...
+
+prop_mempty_neutral_left :: (Monoid m, Eq m) => m -> Bool
+prop_mempty_neutral_left = ...
+
+prop_mempty_neutral_right :: (Monoid m, Eq m) => m -> Bool
+prop_mempty_neutral_right = ...
+\end{haskellcode}
+  Überprüfe, dass \haskellinline{[Char]} ein Monoid ist.
+
+  {\scriptsize \emph{Hinweis.} Verwende
+  \haskellinline[fontsize=\scriptsize]{quickCheck (prop_assoc :: [Char] ->
+  [Char] -> [Char] -> Bool)}. Mit der expliziten Typsignatur legst du die
+  Typvariable \haskellinline[fontsize=\scriptsize]{m} fest, d.\,h. du teilst
+  mit, welche Monoid-Instanz du überprüfen willst.}
+\end{aufgabe}
+
+\begin{aufgabe}{QuickCheck all the things!}
+  Überprüfe alle von dir bearbeiteten Aufgaben von Blatt 1 auf ihre Korrektheit.
+  
+  {\scriptsize \emph{Hinweis.} Im Besonderen eignen sich die Aufgabe \refaufgabe{38} und \refaufgabe{45}.}
+\end{aufgabe}
 
 \section{Statistisch aussagekräftige Benchmarks}
 
@@ -430,7 +663,7 @@ Zahlen einen Thread, der sich gleich nach seiner Erstellung für eine
 zu~\haskellinline{x} proportionale Zeit schlafen legt und
 anschließend~\haskellinline{x} auf dem Terminal ausgibt.
 
-{\scriptsize\emph{Tipp.} Verwende die Funktion \haskellinline{threadDelay ::
+{\scriptsize\emph{Tipp.} Verwende die Funktion \haskellinline[fontsize=\scriptsize]{threadDelay ::
 Int -> IO ()}, die den momentan laufenden Thread für eine gegebene Anzahl
 Mikrosekunden schlafen legt.\par}
 \end{aufgabe}
@@ -491,7 +724,7 @@ main = do
 \begin{aufgabe}{Warten auf Kinder}
 Oft möchte man im Hauptthread die Beendigung gestarteter Threads abwarten. Das
 ist zum Beispiel mit folgendem Code möglich (den es natürlich auch schon in
-verpackter Form im Modul \haskellinline{Control.Concurrent.Async} gibt).
+verpackter Form im Modul \textinline{Control.Concurrent.Async} gibt).
 Vollziehe ihn nach!
 
 \begin{haskellcode}

@@ -201,7 +201,7 @@ Welche der folgenden Funktionen sind strikt, welche nicht?
 \end{aufgabe}
 
 \begin{aufgabe}{Der Fixpunktoperator}
-Im Modul \haskellinline{Control.Monad.Fix} ist folgende Funktion vordefiniert
+Im Modul \textinline{Control.Monad.Fix} ist folgende Funktion vordefiniert
 (welche noch nichts mit Monaden zu tun hat):
 \begin{haskellcode}
 fix :: (a -> a) -> a
@@ -358,7 +358,7 @@ individuelle Show-Instanz für ihn.
 \end{aufgabe}
 
 \begin{aufgabe}{Die Monoid-Typklasse}
-Das Modul \haskellinline{Data.Monoid} definiert die Monoid-Typklasse:
+Das Modul \textinline{Data.Monoid} definiert die Monoid-Typklasse:
 \begin{haskellcode}
 class Monoid a where
     mempty  :: a
@@ -378,7 +378,7 @@ Klasse definieren können?}
 \begin{enumerate}
 \item Gebe einer Nachimplementierung des Listen-Datentyps, etwa
 \haskellinline{data List a = Nil | Cons a (List a)} eine Monoid-Instanz.
-Vergiss nicht, zu Beginn deines Programmtexts mit \haskellinline{import
+Vergiss nicht, zu Beginn deines Programmtexts mit \textinline{import
 Data.Monoid} die Definition der Monoid-Klasse zu laden.
 \item Implementiere folgende Funktion:
 \begin{haskellcode}
@@ -403,7 +403,7 @@ Monoide!
 \begin{haskellcode}
 comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
 \end{haskellcode}
-aus dem Modul \haskellinline{Data.Ord}. Sie kann zum Beispiel so verwendet werden:
+aus dem Modul \textinline{Data.Ord}. Sie kann zum Beispiel so verwendet werden:
 \begin{haskellcode}
 import Data.List
 
@@ -425,8 +425,8 @@ nach~\haskellinline{a}. Bestätige das, indem du folgenden Code vervollständigs
 instance (Monoid a) => Monoid (e -> a) where
     -- ...
 \end{haskellcode}
-Da diese Instanz schon in~\haskellinline{Data.Monoid} vordefiniert ist, musst
-du für diese Teilaufgabe den Import von\haskellinline{Data.Monoid} entfernen
+Da diese Instanz schon in~\textinline{Data.Monoid} vordefiniert ist, musst
+du für diese Teilaufgabe den Import von\textinline{Data.Monoid} entfernen
 und die Monoid-Typklasse selbst definieren.
 \item Was macht folgender Code? Wieso tut er das? Informiere dich dazu über
 die Monoid-Instanz von \haskellinline{Ordering} und erinnere dich an die
@@ -656,7 +656,7 @@ foo x = do
 	Implementiere einen einfachen Verschlüsselungsalgorithmus deiner Wahl, etwa:
 	\begin{enumerate}
 		\item Die Cäsarverschlüsselung, also Verschiebung des Alphabets: \haskellinline{rot :: Integer -> String -> String}. Die Implementation soll folgendes Gesetz erfüllen: \haskellinline{rot (-n) (rot n "foobar") == "foobar"}.
-            Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \haskellinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks! Beispiel: \haskellinline{rot 3 "hallo"} evaluiert zu \haskellinline{"kdoor"}.
+            Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \textinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks! Beispiel: \haskellinline{rot 3 "hallo"} evaluiert zu \haskellinline{"kdoor"}.
         \item Die Vigenèreverschlüsselung. Die funktioniert wie die Cäsarverschlüsselung, nur dass es mehrere "Schlüssel" (\haskellinline{Integer}) gibt, für jeden \haskellinline{Char} einen: \haskellinline{vigenère :: [Integer] -> String -> String}. Sollten die \haskellinline{Integer} nicht ausreichen, wird wieder beim ersten angefangen. Nützlich ist die Funktion \haskellinline{cycle :: [a] -> [a]}, die aus einer Liste eine unendliche macht, indem sie immer wieder wiederholt wird. Beispiel: \haskellinline{vigenère [1,2,3] "hallo"} evaluiert zu \haskellinline{"icomq"}.
 	\end{enumerate}
 \end{aufgabe}
@@ -697,7 +697,7 @@ Zahlen, gibt eine Liste von allen Termbäumen zurück, an deren Blättern (in
 genau der gegebenen Reihenfolge) die Zahlen aus~\haskellinline{xs} stehen. Alle Zahlen
 müssen verwendet werden, und zwar jeweils genau einmal.
 \item Importiere oder reimplementiere die Funktion~\haskellinline{permutations
-:: [a] -> [[a]]} aus~\haskellinline{Data.List}.
+:: [a] -> [[a]]} aus~\textinline{Data.List}.
 \item Füge alle Puzzleteile zusammen.
 \end{enumerate}
 \end{aufgabe}
@@ -707,7 +707,7 @@ müssen verwendet werden, und zwar jeweils genau einmal.
 \item Informiere dich zunächst auf Wikipedia, wie man das Apfelmännchen-Fraktal
 theoretisch berechnet.
 \item Implementiere die komplexen Zahlen in Haskell. Wenn du diesen Schritt
-überspringen möchtest, dann importiere einfach~\haskellinline{Data.Complex}.
+überspringen möchtest, dann importiere einfach~\textinline{Data.Complex}.
 Andernfalls definiere einen eigenen Datentyp für komplexe Zahlen und versehe
 ihn mit einer Num-Instanz.
 \item Schreibe ein Haskell-Programm, das das Apfelmännchen-Fraktal in
@@ -769,7 +769,7 @@ Die Identitätsfunktion~\haskellinline{\x -> x} wird dann
 durch~\haskellinline{Lam "x" (Var "x")} dargestellt. Die
 Funktion~\haskellinline{\f -> \x -> f x} durch~\haskellinline{Lam "f" $ Lam "x"
 $ App (Var "f") (Var "x")}.
-\item Mache dich mit dem Modul~\haskellinline{Data.Map} vertraut. Es wird
+\item Mache dich mit dem Modul~\textinline{Data.Map} vertraut. Es wird
 meistens \emph{qualifiziert} importiert: \haskellinline{import qualified
 Data.Map as M}
 \item Implementiere einen Evaluator für das ungetypte Lambda-Kalkül, also eine
