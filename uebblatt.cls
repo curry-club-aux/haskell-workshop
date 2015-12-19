@@ -52,7 +52,7 @@
 \renewcommand{\maketitle}[2]{%
   \thispagestyle{empty}%
   \begin{minipage}[b]{0.6 \linewidth}
-    Erster Haskell-Workshop \\
+    #1 \\
     im OpenLab Augsburg \\
     {\footnotesize \href{http://github.com/curry-club-aux/haskell-workshop}{github.com/curry-club-aux/haskell-workshop}}
   \end{minipage}
