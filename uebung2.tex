@@ -74,8 +74,8 @@ kombinieren, ohne auf Auswirkungen von parallel ablaufenden Programmteilen
 achten zu müssen.
 \item Data Parallel Haskell (DPH). Dabei kümmern sich der Compiler und die
 Laufzeitumgebung selbstständig um eine effiziente Verteilung des auszuwertenden
-Codes. DPH ist ein Forschungsprojekt, dass noch nicht seinen Weg in die
-aktuelle GHC-Version gefunden hat. XXX: Stimmt das?
+Codes. DPH ist ein Forschungsprojekt, das noch nicht seinen Weg in die
+aktuelle GHC-Version gefunden hat.
 \end{itemize}
 
 
@@ -88,12 +88,31 @@ Rückgabewert ist ein Wert vom Typ \haskellinline{ThreadId}, mit dem man den
 Thread noch nachträglich kontrollieren (etwa vorzeitig beenden) kann.
 
 Die Laufzeitumgebung kommt mit sehr vielen -- Millionen -- von
-leichtgewichtigen Threads klar. Sie werden automatisch auf eine kleine Anzahl
+leichtgewichtigen Threads klar. Sie werden auf eine kleine Anzahl
 echter Threads auf Betriebssystem-Level verteilt.
 
 In speziellen Anwendungsfällen ist es nötig, Betriebssystem-Threads statt
 leichtgewichtiger Threads zu erzeugen. Das ist mittels der Funktion
 \haskellinline{forkOS :: IO a -> IO ThreadId} ebenfalls möglich.
+
+\emph{Wichtig:} Standardmäßig verwendet die Laufzeitumgebung nur einen einzigen
+Betriebssystem-Thread. Wenn man Threads nur verwenden möchte, um auf das
+Eintreffen von IO-Events zu warten (etwa neue Benutzereingaben vom Terminal
+oder aus dem Netzwerk), dann kann schon genügen. Wenn man aber mit Threads
+tatsächlich auch mehrere Berechnungen parallel ausführen möchte, muss man
+seinen Code mit der Option \texttt{-threaded} kompilieren und beim Ausführen
+dem Laufzeitsystem mitteilen, dass es mehrere Betriebssystem-Threads verwenden
+soll:
+
+\begin{verbatim}
+# Kompilieren mit:
+$ ghc --make -O2 -threaded Main
+
+# Ausführen mit:
+$ ./Main +RTS -N4 -RTS   # genau vier Betriebssystem-Threads verwenden
+$ ./Main +RTS -N -RTS    # sinnvolle Anzahl Betriebssystem-Threads verwenden
+\end{verbatim}
+
 
 \begin{aufgabe}{Hallo Welt aus zwei Threads}
 Schreibe ein Haskell-Programm, das einen leichtgewichtigen Thread erzeugt
@@ -174,8 +193,9 @@ main = do
 
 \begin{aufgabe}{Warten auf Kinder}
 Oft möchte man im Hauptthread die Beendigung gestarteter Threads abwarten. Das
-ist zum Beispiel mit folgendem Code möglich, den es natürlich auch schon in der
-Bibliothek XXX gibt. Vollziehe ihn nach!
+ist zum Beispiel mit folgendem Code möglich (den es natürlich auch schon in
+verpackter Form im Modul \haskellinline{Control.Concurrent.Async} gibt).
+Vollziehe ihn nach!
 
 \begin{haskellcode}
 import Control.Monad
@@ -211,7 +231,63 @@ Zum Ende dieses Abschnitts sei bemerkt, dass man selten auf der Ebene dieser
 Aufgaben programmieren muss. Für viele Einsatzgebiete gibt es schon fertige
 Kombinatoren-Bibliotheken zum nebenläufigen Programmieren.
 
-XXX: \texttt{+RTS -N -RTS} erwähnen.
+\begin{aufgabe}{Projekt: Ein einfacher Chat-Server}
+Vervollständige folgende Vorlage für einen einfachen Chat-Server. Clients
+sollen sich mit ihm auf TCP-Port~4242 verbinden können. Eingehende Nachrichten
+sollen an alle verbundenen Clients weitergeleitet werden.
+
+Diese Vorlage ist auf einem niedrigen Level, mit expliziten Socket-Operationen,
+geschrieben. Normalerweise würde man eine High-Level-Streaming-Bibliothek wie
+Conduits oder Pipes verwenden. Diese kümmern sich auch automatisch um
+ordnungsgemäßes Abmelden von Clients.
+
+{\scriptsize\emph{Tipp.} Verwende die Funktion \haskellinline{dupChan :: Chan a
+-> IO (Chan a)}. \emph{Bonusaufgabe.} Identifiziere das Speicherleckproblem und
+löse es.\par}
+
+\begin{haskellcode}
+module Main where
+
+import Control.Monad
+import Control.Concurrent
+import Network.Socket
+import System.IO
+
+main :: IO ()
+main = do
+    -- Lausche auf Port 4242.
+    sock <- socket AF_INET Stream 0
+    setSocketOption sock ReuseAddr 1
+    bindSocket sock (SockAddrInet 4242 iNADDR_ANY)
+    listen sock 10
+
+    -- Setze einen Kanal auf. Was in diesen Kanal geschrieben wird,
+    -- soll an alle verbundenen Clients weitergeleitet werden.
+    ...
+
+    -- Die Hauptschleife: Akzeptiere laufend neue Verbindungen und
+    -- bearbeite sie.
+    forever $ do
+        (conn,_) <- accept sock
+        hdl      <- socketToHandle conn ReadWriteMode
+        hSetBuffering hdl NoBuffering
+        -- `hdl` ist nun ein gewöhnlicher Handle, mit dem `hGetLine`
+        -- und `hPutStrLn` verwendet werden können.
+
+        -- Dupliziere den Kanal, um mehrere Zuhörer zu unterstützen.
+        ...
+
+        -- Schreibe gelesene Nachrichten in den Kanal.
+        forkIO $ forever $ do
+            msg <- hGetLine hdl
+            ...
+
+        -- Leite Nachrichten der anderen Verbindungen weiter.
+        forkIO $ forever $ do
+            ...
+            hPutStrLn hdl msg
+\end{haskellcode}
+\end{aufgabe}
 
 
 \subsection{Shared Transactional Memory (STM)}
@@ -248,7 +324,8 @@ main = do
 Mit STM passiert das nicht. Statt \haskellinline{IORef}'s verwendet man dann
 \haskellinline{TVar}'s. Die Operationen übertragen sich wörtlich, spielen sich
 dann aber in der \haskellinline{STM}- statt der \haskellinline{IO}-Monade ab:
-\haskellinline{newTVar :: a -> STM (TVar a)} und so weiter.
+\haskellinline{newTVar :: a -> STM (TVar a)} und so weiter. Man führt
+STM-Aktionen mit \haskellinline{atomically :: STM a -> IO a} aus.
 
 Der angepasste Code sieht so aus:
 
@@ -279,7 +356,17 @@ main = do
     print (x, y)
 \end{haskellcode}
 
+Wie funktioniert STM? In erster Näherung so: Wird ein
+\haskellinline{atomically}-Block ausgeführt, so werden Änderungen an
+\haskellinline{TVar}'s nicht sofort geschrieben. Stattdessen werden sie in
+einem Log notiert. Am Ende des Blocks prüft das Laufzeitsystem in einer
+atomaren Operation, ob sich seit Ablauf des Blocks seine Abhängigkeiten (zum
+Beispiel veränderliche Variablen, auf die lesend zugegriffen wurde) geändert
+haben. Wenn nein, macht es die Änderungen an den \haskellinline{TVar}'s
+wirksam. Wenn ja, wird der Block einfach erneut ausgeführt. Da in der
+STM-Monade nicht beliebige Nebenwirkungen wie \haskellinline{fireMissiles}
+möglich sind, ist das ein fundiertes Vorgehen.
+
 \end{document}
 
-Super einfachen Chat-Server schreiben: Man verbindet sich mit Telnet. Wenn man
-etwas schickt, so erhalten das alle anderen angeschlossenen Clients.
+XXX: Ein paar Aufgaben zu `par` und `pseq` verfassen.

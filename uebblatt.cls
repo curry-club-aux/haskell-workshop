@@ -50,7 +50,7 @@
 \newlength{\titleskip}
 \setlength{\titleskip}{1.5em}
 \renewcommand{\maketitle}[2]{%
-  \pagestyle{empty}%
+  \thispagestyle{empty}%
   \begin{minipage}[b]{0.6 \linewidth}
     Erster Haskell-Workshop \\
     im OpenLab Augsburg \\
