@@ -142,6 +142,63 @@ Typsignatur muss angepasst werden!
 \begin{aufgabe}{Logging mit der Writer-Monade}
 \end{aufgabe}
 
+\begin{aufgabe}{Implementierung der Maybe-Monade}
+Implementiere die Monaden-Instanz von~\haskellinline{Maybe} neu.
+Vervollständige also folgendes Programm:
+
+\begin{haskellcode}
+-- kein `import Data.Maybe` hier!
+
+data Maybe a = Nothing | Just a deriving (Show,Eq)
+
+instance Functor Maybe where
+    fmap f Nothing  = ...
+    fmap f (Just x) = ...
+
+instance Applicative Maybe where
+    pure x = ...
+    Nothing <*> _       = ...
+    Just f  <*> Nothing = ...
+    Just f  <*> Just x  = ...
+
+instance Monad Maybe where
+    Nothing >>= g = ...
+    Just x  >>= g = ...
+\end{haskellcode}
+\end{aufgabe}
+
+\begin{aufgabe}{Ein erster Monadenturm}
+Wir haben gesehen, dass man mit der State-Monade veränderlichen Zustand
+durchfädeln kann. Mit der Funktion
+\[ \haskellinline{runState :: State s a -> s -> (a,s)} \]
+kann man eine State-Aktion ausführen. Außerdem haben wir gesehen, dass man mit
+der Maybe-Monade Fehlerfälle übersichtlicher behandeln kann. Gibt es eine
+Möglichkeit, diese beiden Fähigkeiten zu kombinieren?
+
+Ja, die gibt es! Und zwar baut man sich den \emph{Monadenturm}
+\haskellinline{StateT s Maybe}. Man verlässt diese Monade mit der Funktion
+\[ \haskellinline{runStateT :: StateT s Maybe a -> Maybe (a, s)}. \]
+Dabei ist~\haskellinline{StateT s} ein \emph{Monadentransformer}: Gegeben eine
+Monade~\haskellinline{M}, so ist~\haskellinline{StateT s M} eine neue Monade,
+die die Fähigkeiten von~\haskellinline{M} sowie veränderlichen Zustand vom
+Typ~\haskellinline{s} unterstützt.
+
+Schreibe die Funktion~\haskellinline{exec' :: (Num a) => Instr a -> State
+(Stack a) ()} aus der Aufgabe zur umgekehrten polnischen Notation so um, dass
+im Fehlerfall nicht mit~\haskellinline{error} eine Ausnahme geworfen wird,
+sondern~\haskellinline{Nothing} zurückgegeben wird. Der neue Typ soll also
+\haskellinline{exec'' :: (Num a) => Instr a -> StateT (Stack a) Maybe ()} sein.
+
+{\scriptsize\emph{Tipp.} Wegen Typklassenmagie kannst du weiterhin die
+Funktionen~\haskellinline{get} und~\haskellinline{put} verwenden. Diese haben
+hier die Typen~\haskellinline{get :: StateT (Stack a) Maybe (Stack a)}
+und~\haskellinline{put :: Stack a -> StateT (Stack a) Maybe ()}. Mit der
+Funktion~\haskellinline{lift :: Maybe r -> StateT (Stack a) Maybe r} kannst du
+Werte aus der Basismonade, in unserem Fall also~\haskellinline{Maybe}, in die
+transformierte Monade heben. Nützlich wird vor allem \haskellinline{lift
+Nothing :: StateT (Stack a) Maybe r} sein.\par}
+\end{aufgabe}
+
 \begin{aufgabe}{Für Unerschrockene: Die Continuation-Monade}
 \end{aufgabe}
 
