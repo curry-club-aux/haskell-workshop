@@ -33,8 +33,8 @@ initialState = GameState
 -- Rot-, Grün-, Blau- und Transparenz-Anteil einer Farbe als Floats zwischen 0
 -- und 1.0.
 render :: GameState -> Picture
-render (GameState (x, y) pic) =
-  translate x y pic $ color (makeColor 0.5 1.0 0.1 1.0) (rectangleSolid 100 40)
+render (GameState (x, y)) =
+  translate x y $ color (makeColor 0.5 1.0 0.1 1.0) (rectangleSolid 100 40)
 
 -- In dieser Funktion beschreibsts du, wie sich der Zustand ändern soll , wenn
 -- der Benutzer die Maus bewegt, klickt oder eine Taste drückt.
@@ -42,13 +42,13 @@ render (GameState (x, y) pic) =
 -- Graphics-Gloss-Interface-Pure-Game.html#t:Event
 -- findest du die Dokumentation zu Event.
 handleInput :: Event -> GameState -> GameState
-handleInput (EventKey (SpecialKey k) _ _ _) (GameState (x, y) pic)
+handleInput (EventKey (SpecialKey k) _ _ _) (GameState (x, y))
   = case k of
-      KeyUp -> GameState (x, y + 5) pic
-      KeyDown -> GameState (x, y - 5) pic
-      KeyLeft -> GameState (x - 5, y) pic
-      KeyRight -> GameState (x + 5, y) pic
-      _ -> GameState (x,y) pic
+      KeyUp -> GameState (x, y + 5)
+      KeyDown -> GameState (x, y - 5)
+      KeyLeft -> GameState (x - 5, y)
+      KeyRight -> GameState (x + 5, y)
+      _ -> GameState (x,y)
 handleInput _ gs = gs
 
 -- Beschreibe, wie sich der Zustand ändert, wenn Zeit verstreicht.
