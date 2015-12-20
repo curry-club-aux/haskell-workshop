@@ -2,6 +2,8 @@
 \documentclass{uebblatt}
 
 \newcommand{\refaufgabe}[1]{#1} % TODO: wir sollten irgendwie Übungsaufgaben (vom ersten Blatt) mit Namen referenzieren, nicht per Nummer. Also wie mit \ref in LaTeX.
+% Wir können die Blätter auch einfach zusammenlegen.
+% Dann mit \refstepcounter arbeiten.
 
 \begin{document}
 
@@ -253,7 +255,7 @@ Eine der coolsten Haskell-Bibliothek überhaupt ist \emph{QuickCheck}. Mit
 QuickCheck ist es supereinfach, geschriebene Funktionen auf ihre Korrektheit zu
 testen. Während in anderen Programmiersprachen ein Test oft bloß aus einer
 handvoll selbst ausgewählter Beispieleingaben und den zugehörigen erwarteten
-Ausgaben besteht, kann mit mit QuickCheck erwartete \emph{Eigenschaften} von
+Ausgaben besteht, kann man mit QuickCheck erwartete \emph{Eigenschaften} von
 Funktionen formulieren und überprüfen lassen. Dadurch deckt man häufig Fehler in
 Sonderfällen auf, an die man sonst gar nicht gedacht hätte.
 
@@ -277,7 +279,7 @@ prop_concat_suffix :: [Int] -> [Int] -> Bool
 prop_concat_suffix as bs = bs `isSuffixOf` as ++ bs
 \end{haskellcode}
 
-Jede Eigenschaft ist eine Funktion, die ein paar Eingaben annimmt und dann
+Jede Eigenschaft ist eine Funktion, die ein paar Eingaben nimmt und dann
 zurückgibt, ob die Eigenschaft für diese Eingaben erfüllt ist. Wir können
 nun diese Eigenschaften mit der \haskellinline{quickCheck}-Funktion in GHCi
 überprüfen:
@@ -352,7 +354,7 @@ Implementierungen auf allen (getesteten) Eingaben übereinstimmen.
   Run-Length-Encodings.}
 \end{aufgabe}
 
-Wir wollen nun Aufgabe \refaufgabe{19} von Blatt 1 testen. Dort haben wir den
+Wir wollen nun Aufgabe \refaufgabe{20} von Blatt 1 testen. Dort haben wir den
 Datentyp
 
 \begin{haskellcode}
@@ -407,14 +409,14 @@ instance Arbitrary Tree where
     \haskellinline{numberOfLeaves l + numberOfLeaves r = numberOfLeaves (Fork m l r)}
     für alle \haskellinline{l, r :: Tree} und \haskellinline{m :: Int}.
     
-    \item Formuliere eine Eigenschaft, die die Höchsttiefe-Funktion aus Aufgabe \refaufgabe{19} b) von Blatt 1 besitzen sollte, und überprüfe sie mit QuickCheck.
+    \item Formuliere eine Eigenschaft, die die Höchsttiefe-Funktion aus Aufgabe \refaufgabe{20}b) von Blatt 1 besitzen sollte, und überprüfe sie mit QuickCheck.
   \end{enumerate}
 \end{aufgabe}
 
 \begin{aufgabe}{Funktoraxiome}
   
   Zeige, dass deine Implementierung von \haskellinline{tmap :: (a -> b) -> Tree
-  a -> Tree b} aus Aufgabe \refaufgabe{20} die Funktoraxiome erfüllt, d.\,h.
+  a -> Tree b} aus Aufgabe \refaufgabe{21} die Funktoraxiome erfüllt, d.\,h.
   
   \begin{enumerate}
     \item[1.] \haskellinline{tmap id = id}
@@ -451,7 +453,7 @@ instance Arbitrary a => Arbitrary (Tree a) where
 
 \begin{aufgabe}{Algebraische Axiome}
   Übersetze die Monoid-Axiome in Haskell-Code! Du findest die
-  \haskellinline{Monoid}-Typklasse in Aufgabe \refaufgabe{26} auf Blatt 1. Frag
+  \haskellinline{Monoid}-Typklasse in Aufgabe \refaufgabe{27} auf Blatt 1. Frag
   nach, falls du nicht weißt, was ein Monoid ist!
   
 \begin{haskellcode}
@@ -476,7 +478,7 @@ prop_mempty_neutral_right = ...
 \begin{aufgabe}{QuickCheck all the things!}
   Überprüfe alle von dir bearbeiteten Aufgaben von Blatt 1 auf ihre Korrektheit.
   
-  {\scriptsize \emph{Hinweis.} Im Besonderen eignen sich die Aufgabe \refaufgabe{38} und \refaufgabe{45}.}
+  {\scriptsize \emph{Hinweis.} Im Besonderen eignen sich die Aufgaben \refaufgabe{39} und \refaufgabe{46}.}
 \end{aufgabe}
 
 \section{Statistisch aussagekräftige Benchmarks}
