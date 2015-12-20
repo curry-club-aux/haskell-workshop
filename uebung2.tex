@@ -302,6 +302,16 @@ generiert und geprüft, dass die angegeben Funktionen auf ihnen
 festgelegt. Wir haben also eine \emph{vollständige} Menge von Eigenschaften
 gefunden.)
 
+\begin{aufgabe}{Korrektheit von \haskellinline{sort}}
+  Schreibe QuickCheck-Tests für \haskellinline{Data.List.sort}!
+  Prüfe dabei folgendes:
+  \begin{itemize}
+    \item Das Ergebnis ist sortiert.
+    \item Es gehen keine Elemente der Eingabeliste verloren.
+    \item Es werden auch nicht Elemente dupliziert.
+  \end{itemize}
+\end{aufgabe}
+
 \begin{aufgabe}{Korrektheit von \haskellinline{fibs}}
   Wir haben auf dem ersten Übungsblatt in Aufgabe \refaufgabe{8} die Liste
   \haskellinline{fibs :: [Int]} von Fibonacci-Zahlen implementiert. Wir haben
