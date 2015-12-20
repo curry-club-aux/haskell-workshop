@@ -42,13 +42,13 @@ ex = [Lit 1, Lit 2, Add, Lit 3, Mult, Lit 4, Lit 5, Mult, Sub]
 \end{haskellcode}
 
 \begin{enumerate}
-\item Schreibe eine Funktion~\haskellinline{exec :: Instr a -> Stack a -> Stack
+\item Schreibe eine Funktion~\haskellinline{exec :: (Num a, Fractional a) => Instr a -> Stack a -> Stack
 a}, die eine Instruktion als Argument nimmt und diese ausführt: also einen
 gegegeben Stack in einen neuen transformiert. Im Fehlerfall (Division durch
 Null, zu wenige Argumente auf dem Stack) soll die Funktion einfach
 mit~\haskellinline{error} terminieren.
 \item Schreibe die Funktion nun unter Verwendung der State-Monade um. Der neue
-Typ soll also~\haskellinline{exec' :: (Num a) => Instr a -> State (Stack a) ()}
+Typ soll also~\haskellinline{exec' :: (Num a, Fractional a) => Instr a -> State (Stack a) ()}
 sein. Denk daran, das Modul \haskellinline{Control.Monad.State} zu importieren.
 Schreibe und verwende Hilfsfunktionen~\haskellinline{push :: a -> State (Stack
 a) ()} und~\haskellinline{pop :: State (Stack a) a}. Ein Fall in der Definition
@@ -195,11 +195,11 @@ Monade~\haskellinline{M}, so ist~\haskellinline{StateT s M} eine neue Monade,
 die die Fähigkeiten von~\haskellinline{M} sowie veränderlichen Zustand vom
 Typ~\haskellinline{s} unterstützt.
 
-Schreibe die Funktion~\haskellinline{exec' :: (Num a) => Instr a -> State
+Schreibe die Funktion~\haskellinline{exec' :: (Num a, Fractional a) => Instr a -> State
 (Stack a) ()} aus der Aufgabe zur umgekehrten polnischen Notation so um, dass
 im Fehlerfall nicht mit~\haskellinline{error} eine Ausnahme geworfen wird,
 sondern~\haskellinline{Nothing} zurückgegeben wird. Der neue Typ soll also
-\haskellinline{exec'' :: (Num a) => Instr a -> StateT (Stack a) Maybe ()} sein.
+\haskellinline{exec'' :: (Num a, Fractional a) => Instr a -> StateT (Stack a) Maybe ()} sein.
 
 {\scriptsize\emph{Tipp.} Wegen Typklassenmagie kannst du weiterhin die
 Funktionen~\haskellinline{get} und~\haskellinline{put} verwenden. Diese haben
