@@ -13,7 +13,7 @@ Benutze die vordefinierten Funktionen \haskellinline{fst :: (a, b) -> a} und \ha
 \end{aufgabe}
 
 \begin{aufgabe}{Medianbestimmung}
-Sei~\haskellinline{xs} eine unsortierte Liste von Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das Element in der Mitte in einer Sortierung) von~\haskellinline{xs} berechnet. Verwende dazu die Funktionen \haskellinline{Data.List.sort}, \haskellinline{length}, \haskellinline{div} und~\haskellinline{!!}.
+Sei~\haskellinline{xs} eine unsortierte Liste von ungerade vielen Zahlen, z.\,B. \haskellinline{let xs = [3, 7, -10, 277, 89, 13, 22, -100, 1]}. Schreibe einen Ausdruck, der den Median (das Element in der Mitte in einer Sortierung) von~\haskellinline{xs} berechnet. Verwende dazu die Funktionen \haskellinline{Data.List.sort}, \haskellinline{length}, \haskellinline{div} und~\haskellinline{!!}.
 \end{aufgabe}
 
 \begin{aufgabe}{Der Eulen-Operator erster Ordnung}
@@ -29,7 +29,7 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
   \begin{enumerate}
     \item Verwende \haskellinline{map}, um einen String in eine Liste von Bools zu verwandeln, die angeben, ob das entsprechende Zeichen im String ein Groß- oder Kleinbuchstabe war.
     Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein. \\
-    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.\par}
+    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{and :: [Bool] -> Bool} und \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.\par}
     \item Schreibe eine Funktion, die für einen String zurückgibt, ob er nur Kleinbuchstaben enthält.
     \item Berechne die Anzahl der Kleinbuchstaben in einem gegebenen String.
   \end{enumerate}
@@ -574,7 +574,7 @@ Schreibe ein Programm, das den Benutzer solange nach einer Zahl fragt, bis diese
 
 \begin{aufgabe}{Monadische Schleifen}
 \begin{enumerate}
-\item Schreibe eine Funktion, die eine gegebene IO-Aktion (oder eine andere Art Aktion) eine gewisse Anzahl von Malen wiederholt. Die Typsignatur sollte also \haskellinline{replicateM :: Int -> [IO a] -> IO [a]} (oder allgemeiner \haskellinline{replicateM :: (Monad m) => Int -> [m a] -> m [a]} -- erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!) sein.
+\item Schreibe eine Funktion, die eine gegebene IO-Aktion (oder eine andere Art Aktion) eine gewisse Anzahl von Malen wiederholt. Die Typsignatur sollte also \haskellinline{replicateM :: Int -> IO a -> IO [a]} (oder allgemeiner \haskellinline{replicateM :: (Monad m) => Int -> m a -> m [a]} -- erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!) sein.
 \item Schreibe eine Funktion \haskellinline{forM :: (Monad m) => [a] -> (a -> m b) -> m [b]} die das tut, was ihr Name und ihre Typsignatur versprechen.
 \item Schreibe eine Funktion, die es erlaubt, eine IO-Aktion (oder eine andere Art Aktion) unendlich oft zu wiederholen. Die Typsignatur sollte \haskellinline{forever :: (Monad m) => m a -> m b} sein. Erinnere dich, dass \haskellinline{IO} eine Instanz von \haskellinline{Monad} ist!
 \end{enumerate}
