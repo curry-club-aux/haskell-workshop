@@ -80,7 +80,7 @@ safeTail :: [a] -> Maybe [a]
 \end{haskellcode}
 
 \item Folgender Code verwendet diese Funktionen, um das erste Element einer
-gegebenen Liste mit dem vorletzten zu multiplizieren. Bewundere, wie unübersichtlich
+gegebenen Liste mit dem zweiten zu multiplizieren. Bewundere, wie unübersichtlich
 der Code durch die verschachtelte Fehlerbehandlung ist.
 
 \begin{haskellcode}
@@ -89,7 +89,7 @@ ex xs = case safeHead xs of
     Nothing -> Nothing
     Just x  -> case safeTail xs of
         Nothing  -> Nothing
-        Just xs' -> case safeLast xs' of
+        Just xs' -> case safeHead xs' of
             Nothing -> Nothing
             Just y  -> Just (x * y)
 \end{haskellcode}
@@ -102,7 +102,7 @@ ex :: (Num a) => [a] -> Maybe a
 ex xs = do
     ...   -- hier irgendwas mit safeHead
     ...   -- hier irgendwas mit safeTail
-    ...   -- hier irgendwas mit safeLast
+    ...   -- hier irgendwas mit safeHead
     ...   -- hier irgendwas mit x * y
 \end{haskellcode}
 
