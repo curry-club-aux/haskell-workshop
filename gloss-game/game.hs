@@ -36,7 +36,7 @@ render :: GameState -> Picture
 render (GameState (x, y)) =
   translate x y $ color (makeColor 0.5 1.0 0.1 1.0) (rectangleSolid 100 40)
 
--- In dieser Funktion beschreibsts du, wie sich der Zustand ändern soll , wenn
+-- In dieser Funktion beschreibst du, wie sich der Zustand ändern soll, wenn
 -- der Benutzer die Maus bewegt, klickt oder eine Taste drückt.
 -- Unter https://hackage.haskell.org/package/gloss-1.9.4.1/docs/
 -- Graphics-Gloss-Interface-Pure-Game.html#t:Event
@@ -44,11 +44,11 @@ render (GameState (x, y)) =
 handleInput :: Event -> GameState -> GameState
 handleInput (EventKey (SpecialKey k) _ _ _) (GameState (x, y))
   = case k of
-      KeyUp -> GameState (x, y + 5)
-      KeyDown -> GameState (x, y - 5)
-      KeyLeft -> GameState (x - 5, y)
+      KeyUp    -> GameState (x, y + 5)
+      KeyDown  -> GameState (x, y - 5)
+      KeyLeft  -> GameState (x - 5, y)
       KeyRight -> GameState (x + 5, y)
-      _ -> GameState (x,y)
+      _        -> GameState (x,y)
 handleInput _ gs = gs
 
 -- Beschreibe, wie sich der Zustand ändert, wenn Zeit verstreicht.
