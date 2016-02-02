@@ -248,6 +248,11 @@ fib = fix $ \fib' n ->
 \end{haskellcode}
 \item Wenn du Spaß an solchen Dingen findest, entziffere auch noch folgenden Code:
 \haskellinline{fix $ (0:) . scanl (+) 1}
+\item Erkläre, wie die Ausgabe von~\haskellinline{fix show} zustande kommt.
+Dabei ist \haskellinline{show :: String -> String} die Funktion, die
+eine Zeichenkette als validen Haskell-Code formatiert. Zum Beispiel ist
+\haskellinline{show "foo"} die aus fünf Zeichen bestehende
+Zeichenkette~\haskellinline{"\"foo\""}.
 \end{enumerate}
 \end{aufgabe}
 
