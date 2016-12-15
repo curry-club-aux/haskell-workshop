@@ -465,7 +465,7 @@ instance Arbitrary a => Arbitrary (Tree a) where
   Übersetze die Monoid-Axiome in Haskell-Code! Du findest die
   \haskellinline{Monoid}-Typklasse in Aufgabe \refaufgabe{27} auf Blatt 1. Frag
   nach, falls du nicht weißt, was ein Monoid ist!
-  
+
 \begin{haskellcode}
 prop_assoc :: (Monoid m, Eq m) => m -> m -> m -> Bool
 prop_assoc = ...
@@ -479,8 +479,8 @@ prop_mempty_neutral_right = ...
   Überprüfe, dass \haskellinline{[Char]} ein Monoid ist.
 
   {\scriptsize \emph{Hinweis.} Verwende
-  \haskellinline[fontsize=\scriptsize]{quickCheck (prop_assoc :: [Char] ->
-  [Char] -> [Char] -> Bool)}. Mit der expliziten Typsignatur legst du die
+  \haskellinline[fontsize=\scriptsize]{quickCheck (prop_assoc :: [Char] -> [Char] -> [Char] -> Bool)}.
+  Mit der expliziten Typsignatur legst du die
   Typvariable \haskellinline[fontsize=\scriptsize]{m} fest, d.\,h. du teilst
   mit, welche Monoid-Instanz du überprüfen willst.}
 \end{aufgabe}
@@ -619,7 +619,7 @@ In GHCi sieht das zum Beispiel so aus:
 \end{verbatim}
 
 \emph{Wichtig:} Standardmäßig verwendet die Laufzeitumgebung nur einen einzigen
-Betriebssystem-Thread. Damit können keine Sparks im Hintergrund ausgeführt
+Betriebssystemthread. Damit können keine Sparks im Hintergrund ausgeführt
 werden. Man muss seinen Code mit der Option \texttt{-threaded} kompilieren und
 beim Ausführen dem Laufzeitsystem mitteilen, dass es mehrere
 Betriebssystem-Threads verwenden soll:
@@ -629,8 +629,8 @@ Betriebssystem-Threads verwenden soll:
 $ ghc --make -O2 -threaded Main
 
 # Ausführen mit:
-$ ./Main +RTS -N4 -RTS   # genau vier Betriebssystem-Threads verwenden
-$ ./Main +RTS -N -RTS    # sinnvolle Anzahl Betriebssystem-Threads verwenden
+$ ./Main +RTS -N4 -RTS   # genau vier Betriebssystemthreads verwenden
+$ ./Main +RTS -N -RTS    # sinnvolle Anzahl Betriebssystemthreads verwenden
 
 # Interaktive Shell:
 $ ghci +RTS -N -RTS
@@ -655,7 +655,7 @@ Schreibe eine Funktion \haskellinline{parMap :: (a -> b) -> [a] -> [b]}, die
 semantisch identisch zu~\haskellinline{map} ist, aber alle Werte parallel
 berechnet.
 
-Auf einem Mehrkern-Computer sollte also
+Auf einem Mehrkerncomputer sollte also
 \begin{verbatim}
 > parMap fib [30,30,30,30]
 \end{verbatim}
@@ -690,25 +690,25 @@ Thread noch nachträglich kontrollieren (etwa vorzeitig beenden) kann.
 
 Die Laufzeitumgebung kommt mit sehr vielen -- Millionen -- von
 leichtgewichtigen Threads klar. Sie werden auf eine kleine Anzahl
-echter Threads auf Betriebssystem-Level verteilt.
+echter Threads auf Betriebssystemlevel verteilt.
 
-In speziellen Anwendungsfällen ist es nötig, Betriebssystem-Threads statt
+In speziellen Anwendungsfällen ist es nötig, Betriebssystemthreads statt
 leichtgewichtiger Threads zu erzeugen. Das ist mittels der Funktion
 \haskellinline{forkOS :: IO a -> IO ThreadId} ebenfalls möglich.
 
 \emph{Wichtig:} Wenn man Threads nur verwenden möchte, um mit simultan
 stattfindenden IO-Aktionen umzugehen (etwa Anforderungen mehrerer gleichzeitig
 verbundener Clients über das Netzwerk entgegennehmen), genügt prinzipiell ein
-einzelner Betriebssystem-Thread. Wenn man aber mit Threads
+einzelner Betriebssystemthread. Wenn man aber mit Threads
 tatsächlich auch mehrere Berechnungen parallel ausführen möchte, muss man
 wie im vorherigen Abschnitt beschrieben seinen Code mit der Option
 \texttt{-threaded} kompilieren und beim Ausführen
-dem Laufzeitsystem mit \texttt{+RTS -N -RTS} mitteilen, mehrere
-Betriebssystem-Threads zu verwenden.
+das Laufzeitsystem mit \texttt{+RTS -N -RTS} anweisen, mehrere
+Betriebssystemthreads zu verwenden.
 
 \begin{aufgabe}{Hallo Welt aus zwei Threads}
 Schreibe ein Haskell-Programm, das einen leichtgewichtigen Thread erzeugt
-und den ausführenden Lambroiden sowohl vom Hauptthread als auch dem erzeugten
+und den ausführenden Lambdroiden sowohl vom Hauptthread als auch dem erzeugten
 Thread mit \haskellinline{putStrLn} grüßt.
 \end{aufgabe}
 
@@ -732,9 +732,9 @@ Mikrosekunden schlafen legt.\par}
 
 Eine primitive Möglichkeit der Kommunikation zwischen Threads sind
 (thread-sichere) veränderliche Variablen. Eine solche kann zu jedem Zeitpunkt
-leer sein oder einen Wert enthalten. Man erstellt sie mit
+entweder leer sein oder einen Wert enthalten. Man erstellt sie mit
 \haskellinline{newEmptyMVar :: IO (MVar a)} oder, wenn man die Variable gleich
-initialiseren möchte, mit \haskellinline{newMVar :: a -> IO (MVar a)}.
+initialisieren möchte, mit \haskellinline{newMVar :: a -> IO (MVar a)}.
 
 Mit \haskellinline{readMVar :: MVar a -> IO a} holt man den aktuellen Wert
 einer übergebenen Variable. Sollte die Variable leer sein, blockiert dieser
@@ -866,7 +866,7 @@ main = do
         -- `hdl` ist nun ein gewöhnlicher Handle, mit dem `hGetLine`
         -- und `hPutStrLn` verwendet werden können.
 
-        -- Dupliziere den Kanal, um mehrere Zuhörer zu unterstützen.
+        -- Dupliziere den Kanal, um mehrere Zuhörerinnen zu unterstützen.
         ...
 
         -- Schreibe gelesene Nachrichten in den Kanal.

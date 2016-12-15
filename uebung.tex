@@ -28,10 +28,12 @@ Was könnte der Ausdruck \haskellinline{(.) . (.)} bewirken? Finde es heraus mit
 \begin{aufgabe}{Groß- und Kleinschreibung}
   \begin{enumerate}
     \item Verwende \haskellinline{map}, um einen String in eine Liste von Bools zu verwandeln, die angeben, ob das entsprechende Zeichen im String ein Groß- oder Kleinbuchstabe war.
-    Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein. \\
-    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{and :: [Bool] -> Bool} und \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.\par}
-    \item Schreibe eine Funktion, die für einen String zurückgibt, ob er nur Kleinbuchstaben enthält.
-    \item Berechne die Anzahl der Kleinbuchstaben in einem gegebenen String.
+    Beispielsweise soll bei \haskellinline{"aBCde"} das Ergebnis \haskellinline{[True,False,False,True,True]} sein.
+
+    {\scriptsize \emph{Hinweis.} Verwende \haskellinline[fontsize=\scriptsize]{isLower :: Char -> Bool} aus \textinline[fontsize=\scriptsize]{Data.Char}.\par}
+    \item Verwende \haskellinline{and :: [Bool] -> Bool}, um zu prüfen, ob ein
+    String nur aus Kleinbuchstaben besteht.
+    \item Berechne die Anzahl Kleinbuchstaben in einem gegebenen String.
   \end{enumerate}
 \end{aufgabe}
 
@@ -85,7 +87,7 @@ fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
   \[ 19, 58, 29, 88, 44, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, \ldots \]
   \begin{enumerate}
     
-    \item Schreibe eine Funktion \haskellinline{collNext :: Int -> Int}, welche Collatz-Iteration durchführt.
+    \item Schreibe eine Funktion \haskellinline{collNext :: Int -> Int}, welche die Collatz-Iteration durchführt.
     \item Implementiere die Funktion \haskellinline{collSeq :: Int -> [Int]}, die die Folge der Collatz-Iterierten berechnet: \haskellinline{collSeq 10 = [10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, ...]}
   \end{enumerate}
   Die bisher ungelöste Collatz-Vermutung besagt, dass man ausgehend von jeder beliebigen Zahl $n$ irgendwann bei $1$ landet.
@@ -136,7 +138,7 @@ filterMap f g xs = filter f (map g xs)
 \begin{aufgabe}{Türme von Hanoi}
   \begin{minipage}[m]{0.67 \linewidth}
     Die Aufgabe bei Hanoi ist es, einen Turm von Scheiben von einem Steckplatz zu einem anderen zu transportieren. Dabei darf man nur je eine Scheibe einzeln bewegen und es darf niemals eine größere Scheibe auf einer kleineren liegen. Man hat einen Steckplatz als Zwischenlager zur Verfügung.
-    Implementiere eine Funktion \haskellinline{toh :: Int -> [(Int, Int)]}, welche die Hanoi-Züge (Bewegungen von einzelnen) berechnet, mit denen man einen Turm einer gewissen Größe von Steckplatz $1$ zu Steckplatz $3$ mit Steckplatz $2$ als Zwischenlager bewegen kann.
+    Implementiere eine Funktion \haskellinline{toh :: Int -> [(Int, Int)]}, welche die Hanoi-Züge (Bewegungen von einzelnen Scheiben) berechnet, mit denen man einen Turm einer gewissen Größe von Steckplatz~$1$ zu Steckplatz~$3$ mit Steckplatz~$2$ als Zwischenlager bewegen kann.
   \end{minipage}
   \begin{minipage}{0.32 \linewidth}
     \hfill \includegraphics[width=5cm]{towers-hanoi.png}
@@ -165,7 +167,7 @@ Schreibe ein Programm, das die Liste aller Mirpzahlen berechnet.
 
 \begin{aufgabe}{Primzahlen mit dem Sieb des Eratosthenes}
 \begin{enumerate}
-\item Schreibe ein Haskell-Programm, dass die unendliche Liste aller Primzahlen
+\item Schreibe ein Haskell-Programm, das die unendliche Liste aller Primzahlen
 berechnet. Verwende dazu zunächst deine Funktion~\haskellinline{isPrime ::
 Integer -> Bool} aus der vorherigen Aufgabe und die allgemeine
 Listenfunktion~\haskellinline{filter}.
@@ -227,7 +229,7 @@ fix f = let x = f x in x
 Diese Funktion berechnet von einer gegebenen Funktion~\haskellinline{f} ihren
 \emph{kleinsten Fixpunkt} -- das ist ein Wert~\haskellinline{x :: a},
 sodass~\haskellinline{f x} gleich~\haskellinline{x} ist. Gibt es mehrere
-solcher Fixpunkte, so berechnet~\haskellinline{fix} den "`am wenigsten
+Fixpunkte, so berechnet~\haskellinline{fix} den "`am wenigsten
 definierten"' (das ist mit "`kleinstem"' gemeint). Anschaulich kann man
 sich~\haskellinline{fix f} als~\haskellinline{f (f (f (...)))} vorstellen.
 
@@ -352,6 +354,7 @@ das bezeugen!
 \item \haskellinline{(a, Either b c)} versus \haskellinline{Either (a, b) (a, c)}
 \item \haskellinline{a -> (b, c)}     versus \haskellinline{(a -> b, a -> c)}
 \item \haskellinline{(a, b) -> c}     versus \haskellinline{a -> b -> c}
+(nach dieser Isomorphie ist der Curry Club benannt!)
 \end{enumerate}
 \end{aufgabe}
 
@@ -493,6 +496,9 @@ endlich ist, geht es doch. Implementiere also:
 \begin{haskellcode}
 instance (Finite a, Eq b) => Eq (a -> b) where ...
 \end{haskellcode}
+{\scriptsize\emph{Bemerkung.} Allgemeiner geht es, wenn der Quelltyp
+\emph{kompakt} ist. Suche nach "`scheinbar unmöglichen
+Haskell-Programmen"'.\par}
 \end{enumerate}
 \end{aufgabe}
 
@@ -555,7 +561,7 @@ Funktion
 \begin{haskellcode}
 cantor :: (a -> Set a) -> Set a
 \end{haskellcode}
-die folgendes leistet: Für jede Funktion~\haskellinline{f :: a -> Set a}
+die Folgendes leistet: Für jede Funktion~\haskellinline{f :: a -> Set a}
 soll~\haskellinline{cantor f} eine Menge sein, die nicht im Bild (in der
 Wertemenge) von~\haskellinline{f} enthalten ist.
 \item Bonusfrage zum Grübeln: Die vorherige Teilaufgabe zeigt, dass es in
@@ -622,7 +628,7 @@ whileM cond m = do
 \end{aufgabe}
 
 \begin{aufgabe}{Zahlenratespiel}
-Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich die Nutzerin oder der Nutzer ausgedacht hat. Der Nutzende soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer binären Suche lösen.
+Schreibe ein Programm, das versucht eine Zahl zwischen 0 und 100 zu erraten, die sich die Nutzerin ausgedacht hat. Die Nutzerin soll jeweils bei jedem Rateversuch angeben, ob die geratene Zahl kleiner oder größer als die tatsächliche ist. Du kannst das Problem mit einer binären Suche lösen.
 \end{aufgabe}
 
 \begin{aufgabe}{Die Reader-Monade}
@@ -664,10 +670,10 @@ foo x = do
 \end{aufgabe}
 
 
-\section{Ideen für größere Projekte}
+\section{Ideen für kleinere und größere Projekte}
 
 \begin{aufgabe}{Unicode-Smileys}
-	Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode Smiley ersetzt. Auf unicode-table.com kannst du dir jeden Unicode-Smiley kopieren.
+	Schreibe eine Funktion \haskellinline{replaceSmileys :: String -> String}, die alle "`:-)"' durch deinen liebsten Unicode-Smiley ersetzt. Auf unicode-table.com kannst du dir jeden Unicode-Smiley kopieren.
 
 	Wenn du die \haskellinline{IO}-Monade schon kennst, kannst du diese in einem Programm verwenden, das einen Text einliest und mit dieser Funktion alle Smileys ersetzt und den entstandenen Text ausgibt.
 \end{aufgabe}
@@ -677,7 +683,7 @@ foo x = do
 	\begin{enumerate}
 		\item Die Cäsarverschlüsselung, also Verschiebung des Alphabets: \haskellinline{rot :: Integer -> String -> String}. Die Implementation soll folgendes Gesetz erfüllen: \haskellinline{rot (-n) (rot n "foobar") == "foobar"}.
             Benutze bei der Implementation entweder \haskellinline{chr :: Int -> Char} und \haskellinline{ord :: Char -> Int} aus \textinline{Data.Char} oder eine Liste des Alphabets, wie \haskellinline{['A'..'Z'] ++ ['a'..'z'] :: [Char]}. In beiden Fällen kann dir der Modulooperator \haskellinline{a `mod` b} helfen. Beachte die Backticks! Beispiel: \haskellinline{rot 3 "hallo"} evaluiert zu \haskellinline{"kdoor"}.
-        \item Die Vigenèreverschlüsselung. Die funktioniert wie die Cäsarverschlüsselung, nur dass es mehrere "Schlüssel" (\haskellinline{Integer}) gibt, für jeden \haskellinline{Char} einen: \haskellinline{vigenère :: [Integer] -> String -> String}. Sollten die \haskellinline{Integer} nicht ausreichen, wird wieder beim ersten angefangen. Nützlich ist die Funktion \haskellinline{cycle :: [a] -> [a]}, die aus einer Liste eine unendliche macht, indem sie immer wieder wiederholt wird. Beispiel: \haskellinline{vigenère [1,2,3] "hallo"} evaluiert zu \haskellinline{"icomq"}.
+        \item Die Vigenèreverschlüsselung. Die funktioniert wie die Cäsarverschlüsselung, nur dass es mehrere "`Schlüssel"' (\haskellinline{Integer}) gibt, für jeden \haskellinline{Char} einen: \haskellinline{vigenère :: [Integer] -> String -> String}. Sollten die \haskellinline{Integer} nicht ausreichen, wird wieder beim ersten angefangen. Nützlich ist die Funktion \haskellinline{cycle :: [a] -> [a]}, die aus einer Liste eine unendliche macht, indem sie sie immer wieder wiederholt. Beispiel: \haskellinline{vigenère [1,2,3] "hallo"} evaluiert zu \haskellinline{"icomq"}.
 	\end{enumerate}
 \end{aufgabe}
 
@@ -700,19 +706,19 @@ Schreibe ein Haskell-Programm, das für dich die Lösung findet! Ein mögliches
 Vorgehen ist folgendes.
 
 \begin{enumerate}
-\item Definiere einen Datentyp~\haskellinline{Exp} von Termen zu definieren.
+\item Definiere einen Datentyp~\haskellinline{Exp} von Termen.
 Das Beispiel könnte dabei durch~\haskellinline{Add (Lit 3) (Div (Sub (Lit 1)
 (Lit 4)) (Lit 6))} ausgedrückt werden.
 \item Schreibe eine Funktion~\haskellinline{eval :: (Fractional a) => Exp a -> a}.
 \item Schreibe eine Funktion~\haskellinline{groups :: [a] -> [([a],[a])]}, die
-folgendes leistet: Gegeben eine Liste, berechnet alle Möglichkeiten, diese Liste in zwei
+Folgendes leistet: Gegeben eine Liste, berechnet alle Möglichkeiten, diese Liste in zwei
 Teile zu zerlegen: einen vorderen und einen hinteren. Zum Beispiel:
 \begin{haskellcode*}{escapeinside=||}
 |\ghci| groups "abc"
 [("abc",""),("ab","c"),("a","bc"),("","abc")]
 \end{haskellcode*}
 \item Schreibe eine Funktion~\haskellinline{arb :: [a] -> [Exp a]}, die
-folgendes leistet: Gegeben eine Liste~\haskellinline{xs} von (zum Beispiel)
+Folgendes leistet: Gegeben eine Liste~\haskellinline{xs} von (zum Beispiel)
 Zahlen, gibt eine Liste von allen Termbäumen zurück, an deren Blättern (in
 genau der gegebenen Reihenfolge) die Zahlen aus~\haskellinline{xs} stehen. Alle Zahlen
 müssen verwendet werden, und zwar jeweils genau einmal.
@@ -772,9 +778,9 @@ glorreicher 80x25-Auflösung plottet.
 \end{verbatim}\end{tiny}
 \end{aufgabe}
 
-\begin{aufgabe}{Das ungetypte Lambda-Kalkül}
+\begin{aufgabe}{Das untypisierte Lambda-Kalkül}
 \begin{enumerate}
-\item Informiere dich auf Wikipedia, was das ungetypte Lambda-Kalkül ist.
+\item Informiere dich auf Wikipedia, was das untypisierte Lambda-Kalkül ist.
 Verwende folgende Definition, um Terme des Lambda-Kalküls in Haskell
 abzubilden:
 \begin{haskellcode}
@@ -792,7 +798,7 @@ $ App (Var "f") (Var "x")}.
 \item Mache dich mit dem Modul~\textinline{Data.Map} vertraut. Es wird
 meistens \emph{qualifiziert} importiert: \haskellinline{import qualified
 Data.Map as M}
-\item Implementiere einen Evaluator für das ungetypte Lambda-Kalkül, also eine
+\item Implementiere einen Evaluator für das untypisierte Lambda-Kalkül, also eine
 Funktion \haskellinline{eval :: Env -> Exp -> Exp}. Dabei
 ist~\haskellinline{Env} ein weiteres Typsynonym, das den Typ der
 mitzuschleppenden \emph{Umgebung} angibt:
@@ -811,7 +817,7 @@ Sei~\haskellinline{f :: [Bool] -> Bool} ein Prädikat über unendliche Listen
 von Bools. Wäre es nicht toll, wenn es ein Programm gäbe, das herausfindet,
 ob es eine Bitfolge gibt, auf der~\haskellinline{f} \haskellinline{True}
 liefert? Und wenn ja, eine solche Bitfolge auch noch berechnet? Scheint das
-angesichts der Tatsache, dass es doch (sogar übabzählbar) unendlich viele
+angesichts der Tatsache, dass es doch (sogar überabzählbar) unendlich viele
 Bitfolgen gibt, unmöglich?
 
 Folgendes Programm leistet das Gewünschte. Entziffere es. Die Auflösung gibt es
@@ -853,7 +859,7 @@ Ein assoziatives Datenfeld oder schlicht "`Map"' könntest du schon kennen. Es e
 Definiere dir deinen eigenen Datentyp \haskellinline{Map k v} als binären Suchbaum. Jeder \haskellinline{Fork} enthält einen \emph{Key} (Typ \verb|k|) und ein \emph{Value} (Typ \verb|v|). Im linken Kindbaum befinden sich alle Key-Value-Paare, für die gilt $\textsf{key} < \textsf{aktuellerKey}$. Im rechten Kindbaum gilt umgekehrt: $\textsf{key} > \textsf{aktuellerKey}$. Auf Basis dieser Eigenschaften kannst du die folgende Programmierschnittstelle für \haskellinline{Map} implementieren.
 
 \begin{haskellcode}
--- Unser Map-Typ als binärer Baum.
+-- Unser Map-Typ als binärer Baum
 data Map k v = Fork k v (Map k v) (Map k v)
              | Nil deriving (Show)
 
