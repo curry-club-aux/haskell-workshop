@@ -82,7 +82,7 @@ fizzbuzz = map go [1..]
 -- Lösung mit Pattern Guards (boole’sche Vergleiche)
 -- Die mod-Rechnung bekommt hier einen schöneren Namen,
 -- um die Idee klarer zu machen.
-fizzbuzz' = flip map [1..] go
+fizzbuzz' = map go [1..]
   where
     go :: Int -> String
     go i | 15 `divides` i = "fizz buzz"
@@ -98,7 +98,7 @@ fizzbuzz' = flip map [1..] go
 -- Dementsprechend kann man „sowohl durch drei als auch durch
 -- fünf teilbar“ genau so hinschreiben.
 -- (flip map ist in dem Fall :: [Int] -> (Int -> String) -> [String]
---  und wir nutzen $ \x ->, um die ganze anonyme Funktion ohno
+--  und wir nutzen $ \x ->, um die ganze anonyme Funktion ohne
 --  Klammern angeben zu können.)
 fizzbuzz'' = flip map [1..] $ \x ->
   case (x `mod` 3, x `mod` 5) of
