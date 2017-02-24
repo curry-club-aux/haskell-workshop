@@ -79,8 +79,8 @@ fizzbuzz = [ "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz"
   % von https://de.wikipedia.org/wiki/Collatz-Problem
   \begin{itemize}
     \item Beginne mit irgendeiner natürlichen Zahl $n > 0$.
-    \item Ist n gerade, so nimm als Nächstes $\tfrac{n}{2}$,
-    \item Ist n ungerade, so nimm als Nächstes $3n + 1$.
+    \item Ist~$n$ gerade, so nimm als Nächstes $\tfrac{n}{2}$,
+    \item Ist~$n$ ungerade, so nimm als Nächstes $3n + 1$.
     \item Wiederhole die Vorgehensweise mit der erhaltenen Zahl.
   \end{itemize}
   Zum Beispiel erhält man für $n=19$ die Folge
@@ -125,7 +125,7 @@ filterMap f g xs = filter f (map g xs)
 
 \begin{aufgabe}{Längste Teilfolge}
   Schreibe eine Funktion \haskellinline{longestSubsequence :: (a -> Bool) -> [a] -> [a]}.
-  Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob eine gewisse Benutzerin an einem gegebenen Tag auf GitHub aktiv war, so berechnet \haskellinline{longestSubsequence xs p} die längste Strähne auf GitHub.
+  Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob eine gewisse Benutzerin an einem gegebenen Tag auf GitHub aktiv war, so berechnet \haskellinline{longestSubsequence p xs} die längste Strähne auf GitHub.
 \end{aufgabe}
 
 \begin{aufgabe}{Kettenbrüche}
