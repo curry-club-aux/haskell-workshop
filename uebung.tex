@@ -128,6 +128,46 @@ filterMap f g xs = filter f (map g xs)
   Diese soll die längste zusammenhängende Unterliste in einer Liste berechnen, für die das übergebene Prädikat vom Typ \haskellinline{a -> Bool} den Wert \haskellinline{True} liefert. Wenn beispielsweise \haskellinline{xs :: [Date]} die Liste der letzten 365 Tage ist, und \haskellinline{p :: Date -> Bool} angibt, ob eine gewisse Benutzerin an einem gegebenen Tag auf GitHub aktiv war, so berechnet \haskellinline{longestSubsequence p xs} die längste Strähne auf GitHub.
 \end{aufgabe}
 
+\begin{aufgabe}{(Für Gelangweilte.) Die State-Monade}
+    (Die folgende Aufgabe nutzt viele Konzepte, die bisher nicht eingeführt wurden und ist daher nur für Leute gedacht, die sich gerade langweilen und sich selbst in diese Themen einlesen wollen.)
+  \begin{enumerate}
+      \item Führe in deinem ghci \haskellinline{import Control.Monad.State} aus, damit die Funktionen, die du für diese Aufgabe brauchen wirst, geladen werden.
+      \item Informiere dich, was \haskellinline{(>>=) :: Monad m => m a -> (a -> m b) -> m b} und \haskellinline{return :: Monad m => a -> m a} tun. (Etwa auf https://curry-club-augsburg.de/posts/2015-10-27-monaden-in-haskell.html)
+      \item Die oben genannten Funktionen kann man für beliebige Monaden verwenden.  Ein Beispiel für eine Monade ist die Listen-Monade.  Die obigen Typsignaturen werden dann zu \haskellinline{(>>=) :: [a] -> (a -> [b]) -> [b]} und \haskellinline{return :: a -> [a]}. Verstehe, was folgender Haskell-Code tut:
+          \begin{haskellcode}
+              and10more :: Int -> [Int]
+              and10more x = [x, x + 10]
+              onlyifodd :: Int -> [Int]
+              onlyifodd x = if x `mod` 2 /= 0 then [x] else []
+              [1, 2, 3] >>= and10more >>= onlyifodd
+          \end{haskellcode}
+      \item Informiere dich, was \haskellinline{get :: MonadState s m => m s}, \haskellinline{put :: MonadState s m => s -> m ()}, \haskellinline{state :: MonadState s m => (s -> (a, s)) -> m a} und \haskellinline{runState :: State s a -> s -> (a, s)} tun. (Etwa auf obigem Link.)
+      \item Verstehe, was folgender Haskell-Code tut:
+          \begin{haskellcode}
+              import Control.Monad.State
+
+              factStep :: (Int, Int) -> ((), (Int, Int))
+              factStep (result, counter) = ((), (result * counter, counter - 1))
+
+              factContinueCondition :: (Int, Int) -> Bool
+              factContinueCondition (result, counter) = counter >= 1
+
+              factMonadic :: State (Int, Int) Int
+              factMonadic = do
+                  bool <- fmap factContinueCondition get
+                  if bool
+                  then do
+                      state factStep
+                      factMonadic
+                  else fmap fst get
+
+              fact :: Int -> Int
+              fact n = fst $ runState factMonadic (1, n)
+          \end{haskellcode}
+      \item Wähle eine Aufgabe deiner Wahl, die du bereits gelöst hast und löse sie mit Hilfe der State-Monade auf imperative Weise (d.h. in ähnlichem Stil wie obiges Beispiel).
+  \end{enumerate}
+\end{aufgabe}
+
 \begin{aufgabe}{Kettenbrüche}
   Jede reelle Zahl $r \in \R$ kann als \emph{unendlicher Kettenbruch}
   \[ r = b_0 + \frac{1}{b_1 + \frac{1}{b_2 + \frac{1}{b_3 + \tfrac{1}{\ddots}}}} \]
